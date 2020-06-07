@@ -9,7 +9,6 @@ import com.dropbox.core.v2.sharing.ListSharedLinksResult;
 import com.dropbox.core.v2.sharing.SharedLinkMetadata;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,20 +19,16 @@ import static util.GoogleDriveSpider.videoRepository;
 
 
 public class DropboxApiUtil {
-    private String ACCESS_TOKEN;
+    private String ACCESS_TOKEN = System.getenv("dropbox_key");
     private static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/AwemVideoCreativesPreview").build();
     private DbxClientV2 client;
     private static final String DIRECTORY_FOR_PREVIEW = "tmp/";
 
     public DropboxApiUtil() {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("dropbox.key");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        try {
-            this.ACCESS_TOKEN = reader.readLine();
-            this.client = new DbxClientV2(config, ACCESS_TOKEN);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //InputStream inputStream = getClass().getClassLoader().getResourceAsStream("dropbox.key");
+        //BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        // this.ACCESS_TOKEN = reader.readLine();
+        this.client = new DbxClientV2(config, ACCESS_TOKEN);
     }
 
     // Get all Dropbox uploaded files and links

@@ -18,10 +18,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ClearValuesRequest;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,6 +29,7 @@ import static util.GoogleDriveSpider.videoRepository;
 public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    private static final String CREDENTIALS = System.getenv("googledrive_credentials");
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String RANGE_UPDATE_LASTUPDATETIME = "video main!Q2:Q3";
     private static final String RANGE_UPDATE_LOCALIZATIONTABLE = "video main!A2:I";
@@ -55,7 +53,8 @@ public class GoogleDriveApiUtil {
      */
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = GoogleDriveSpider.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        //InputStream in = GoogleDriveSpider.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = new ByteArrayInputStream(CREDENTIALS.getBytes());
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
