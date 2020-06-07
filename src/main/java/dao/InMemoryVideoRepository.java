@@ -15,7 +15,7 @@ public class InMemoryVideoRepository {
         videoMap.put(videoNumber, new Video(videoNumber, "", "", "", "", "", "", "", ""));
     }
 
-    public void update(Integer videoNumber, String locale, boolean isAllData, boolean isDspData, boolean isFacebookData, boolean isNetworkData, boolean isSquareData, String thumbnailLink) {
+    public void update(Integer videoNumber, String locale, boolean isAllData, boolean isDspData, boolean isFacebookData, boolean isNetworkData, boolean isSquareData, boolean isFbfData, String thumbnailLink) {
         Video tmpVideo = this.getByVideo(videoNumber);
         String enData = tmpVideo.getEnData();
         String deData = tmpVideo.getDeData();
@@ -28,6 +28,7 @@ public class InMemoryVideoRepository {
         final String ALL = "ALL";
         final String NT = "NT ";
         final String SQR = "Sqr ";
+        final String FBF = "FBF ";
         final String FB = "FB ";
         final String DSP = "DSP";
 
@@ -37,6 +38,7 @@ public class InMemoryVideoRepository {
                 else {
                     if (isNetworkData) enData += NT;
                     if (isSquareData) enData += SQR;
+                    if (isFbfData) enData += FBF;
                     if (isFacebookData) enData += FB;
                     if (isDspData) enData += DSP;
                 }
@@ -46,6 +48,7 @@ public class InMemoryVideoRepository {
                 else {
                     if (isNetworkData) deData += NT;
                     if (isSquareData) deData += SQR;
+                    if (isFbfData) deData += FBF;
                     if (isFacebookData) deData += FB;
                     if (isDspData) deData += DSP;
                 }
@@ -55,6 +58,7 @@ public class InMemoryVideoRepository {
                 else {
                     if (isNetworkData) frData += NT;
                     if (isSquareData) frData += SQR;
+                    if (isFbfData) frData += FBF;
                     if (isFacebookData) frData += FB;
                     if (isDspData) frData += DSP;
                 }
@@ -64,6 +68,7 @@ public class InMemoryVideoRepository {
                 else {
                     if (isNetworkData) jaData += NT;
                     if (isSquareData) jaData += SQR;
+                    if (isFbfData) jaData += FBF;
                     if (isFacebookData) jaData += FB;
                     if (isDspData) jaData += DSP;
                 }
@@ -73,6 +78,7 @@ public class InMemoryVideoRepository {
                 else {
                     if (isNetworkData) mxData += NT;
                     if (isSquareData) mxData += SQR;
+                    if (isFbfData) mxData += FBF;
                     if (isFacebookData) mxData += FB;
                     if (isDspData) mxData += DSP;
                 }
@@ -82,6 +88,7 @@ public class InMemoryVideoRepository {
                 else {
                     if (isNetworkData) zhsData += NT;
                     if (isSquareData) zhsData += SQR;
+                    if (isFbfData) zhsData += FBF;
                     if (isFacebookData) zhsData += FB;
                     if (isDspData) zhsData += DSP;
                 }

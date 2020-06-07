@@ -183,4 +183,15 @@ public class GoogleDriveApiUtil {
             e.printStackTrace();
         }
     }
+
+    public static String getModifiedTime(Sheets service, String spreadsheetId) {
+        ValueRange response = null;
+        try {
+            Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, "Q3:Q3");
+             response = request.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return (String) response.getValues().get(0).get(0);
+    }
 }

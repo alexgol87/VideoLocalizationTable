@@ -8,10 +8,8 @@ import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.sharing.ListSharedLinksResult;
 import com.dropbox.core.v2.sharing.SharedLinkMetadata;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,22 +20,24 @@ import static util.GoogleDriveSpider.videoRepository;
 
 
 public class DropboxApiUtil {
-    static String ACCESS_TOKEN = "";
+    private String ACCESS_TOKEN;
+    private static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/AwemVideoCreativesPreview").build();
+    private DbxClientV2 client;
+    private static final String DIRECTORY_FOR_PREVIEW = "tmp/";
 
-    static {
+    public DropboxApiUtil() {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("dropbox.key");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
-            ACCESS_TOKEN = new String(Files.readAllBytes(Paths.get("resources/dropbox.key")));
+            this.ACCESS_TOKEN = reader.readLine();
+            this.client = new DbxClientV2(config, ACCESS_TOKEN);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/awem_video_preview").build();
-    static final DbxClientV2 client = new DbxClientV2(config, ACCESS_TOKEN);
-    static final String DIRECTORY_FOR_PREVIEW = "D:/tmp/";
-
     // Get all Dropbox uploaded files and links
-    static void getDropboxFilesAndLinks() {
+    void getDropboxFilesAndLinks() {
         try {
             ListFolderResult result = client.files().listFolder("");
             while (true) {
@@ -66,7 +66,7 @@ public class DropboxApiUtil {
         }
     }
 
-    static void newPreviewUploadingToDropbox() {
+    void newPreviewUploadingToDropbox() {
         //create tmp folder
         File previewFolder = new File(DIRECTORY_FOR_PREVIEW);
         previewFolder.mkdir();
@@ -81,17 +81,21 @@ public class DropboxApiUtil {
                             Files.copy(in, Paths.get(DIRECTORY_FOR_PREVIEW + v.getVideoNumber() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
                             InputStream in2 = new FileInputStream(String.valueOf(Paths.get(DIRECTORY_FOR_PREVIEW + v.getVideoNumber() + ".jpg")));
                             client.files().uploadBuilder("/" + v.getVideoNumber() + ".jpg").uploadAndFinish(in2);
-                            Thread.sleep(100);
-                        } catch (IOException | InterruptedException | DbxException ex) {
+                            in.close();
+                            in2.close();
+                        } catch (IOException | DbxException ex) {
                             ex.printStackTrace();
-                            Thread.currentThread().interrupt();
                         }
                 });
         // delete tmp folder
         String[] entries = previewFolder.list();
         for (String s : entries) {
             File currentFile = new File(previewFolder.getPath(), s);
-            currentFile.delete();
+            try {
+                Files.deleteIfExists(currentFile.getAbsoluteFile().toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         previewFolder.delete();
     }

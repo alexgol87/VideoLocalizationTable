@@ -25,7 +25,7 @@ public class GeneralUtil {
                 .forEach(v -> {
                     if (!videoRepository.ifContainsVideo(v.getVideoNumber()))
                         videoRepository.add(v.getVideoNumber());
-                    videoRepository.update(v.getVideoNumber(), v.getLocale(), v.getAllData(), v.getDspData(), v.getFacebookData(), v.getNetworkData(), v.getSquareData(), v.getThumbnailLink());
+                    videoRepository.update(v.getVideoNumber(), v.getLocale(), v.getAllData(), v.getDspData(), v.getFacebookData(), v.getNetworkData(), v.getSquareData(), v.getFbfData(), v.getThumbnailLink());
                 });
     }
 
@@ -70,12 +70,6 @@ public class GeneralUtil {
             pageToken = result.getNextPageToken();
             if (pageToken == null) break;
         }
-    }
-
-    public static void initialization() throws InterruptedException {
-        GoogleDriveSpider thread = new GoogleDriveSpider();
-        thread.start();
-        thread.join();
     }
 
     public static Instant startTimeFixing() {

@@ -75,6 +75,10 @@ public class VideoAndLocale {
         return this.video1080x1080 && !this.video1080x1350;
     }
 
+    public boolean getFbfData() {
+        return !this.video1080x1080 && this.video1080x1350;
+    }
+
     public boolean getFacebookData() {
         return this.video1080x1080 && this.video1080x1350;
     }
