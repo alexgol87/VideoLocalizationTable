@@ -31,8 +31,9 @@ public class GoogleDriveApiUtil {
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String RANGE_UPDATE_LASTUPDATETIME = "video main!Q2:Q3";
+    private static final String RANGE_UPDATE_LASTUPDATETIME = "video main!Q1:R1";
     private static final String RANGE_UPDATE_LOCALIZATIONTABLE = "video main!A2:I";
+    private static final String RANGE_GET_LASTUPDATETIME = "Q1:Q1";
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -169,9 +170,8 @@ public class GoogleDriveApiUtil {
             modifiedTimeRequestBody.setRange(RANGE_UPDATE_LASTUPDATETIME);
             List<List<Object>> modifiedTimeValues = new ArrayList<>();
             modifiedTimeValues.add(new ArrayList<>());
-            modifiedTimeValues.add(new ArrayList<>());
-            modifiedTimeValues.get(0).add("Last update time:");
-            modifiedTimeValues.get(1).add(dateString);
+            modifiedTimeValues.get(0).add(dateString);
+            modifiedTimeValues.get(0).add("Last update time");
             modifiedTimeRequestBody.setValues(modifiedTimeValues);
 
             service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_LASTUPDATETIME, modifiedTimeRequestBody)
@@ -186,7 +186,7 @@ public class GoogleDriveApiUtil {
     public static String getModifiedTime(Sheets service, String spreadsheetId) {
         ValueRange response = null;
         try {
-            Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, "Q3:Q3");
+            Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, RANGE_GET_LASTUPDATETIME);
              response = request.execute();
         } catch (IOException e) {
             e.printStackTrace();

@@ -28,3 +28,4 @@ out
 /src/test/
 tokens
 tmp
+/src/main/resources/credentials.json
