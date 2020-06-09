@@ -37,10 +37,10 @@ public class DropboxApiUtil {
             ListFolderResult result = client.files().listFolder("");
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
-                    ListSharedLinksResult result2 = client.sharing().listSharedLinksBuilder()
-                            .withPath(metadata.getPathLower()).withDirectOnly(true).start();
                     int videoNumber = parseIntSafely(metadata.getName().replace(".jpg", ""));
                     if (videoRepository.ifContainsVideo(videoNumber) && !videoRepository.getByVideo(videoNumber).getThumbnailLink().contains("dropbox.com")) {
+                        ListSharedLinksResult result2 = client.sharing().listSharedLinksBuilder()
+                                .withPath(metadata.getPathLower()).withDirectOnly(true).start();
                         if (!result2.getLinks().isEmpty()) {
                             for (SharedLinkMetadata metadata2 : result2.getLinks()) {
                                 videoRepository.updateThumbnailLinkToDropboxLink(videoNumber, metadata2.getUrl());

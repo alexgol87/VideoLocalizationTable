@@ -6,11 +6,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
-    <title>Awem Video Localization Table Updater</title>
+    <title>Creatives Tables Updater</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/styles.css">
 </head>
 <body>
-<img src="${pageContext.request.contextPath}/resources/awem_logo.png" width="100">
 <div class="header"><h2>Video Localization Table Updater</h2></div>
 <div class="lastUpdateTime">Last update time: ${requestScope.lastUpdateTime}</div>
 <br/>
