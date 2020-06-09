@@ -15,36 +15,34 @@ public class MainServlet extends HttpServlet {
     private static final Runnable task = GoogleDriveSpider::new;
     private static Thread thread = null;
     private static String lastUpdateTime;
+    private static final String TRUE = "true";
+    private static final String FALSE = "false";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
             if (thread.getState() == Thread.State.TERMINATED) thread = new Thread(task);
             thread.start();
-            req.setAttribute("lockUpdate", "true");
-            req.setAttribute("tableReady", "false");
+            req.setAttribute("lockUpdate", TRUE);
+            req.setAttribute("tableReady", FALSE);
         } else if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED)) {
-            req.setAttribute("lockUpdate", "false");
-            req.setAttribute("tableReady", "true");
+            req.setAttribute("lockUpdate", FALSE);
+            req.setAttribute("tableReady", TRUE);
             req.setAttribute("execTime", GoogleDriveSpider.execTime);
             lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         } else if ((thread.getState() == Thread.State.RUNNABLE)) {
-            req.setAttribute("lockUpdate", "true");
-            req.setAttribute("tableReady", "false");
+            req.setAttribute("lockUpdate", TRUE);
+            req.setAttribute("tableReady", FALSE);
         }
-        //Instant start = startTimeFixing();
-        //req.setAttribute("executionTime", "Execution Time: "+endTimeFixing(start));
-        //lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         req.setAttribute("lastUpdateTime", lastUpdateTime);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //if (GoogleDriveSpider.checkInstance()) req.setAttribute("lockUpdateButton","true");
         if (thread != null) thread.interrupt();
         thread = new Thread(task);
-        req.setAttribute("lockUpdate", "false");
+        req.setAttribute("lockUpdate", FALSE);
         lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         req.setAttribute("lastUpdateTime", lastUpdateTime);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
