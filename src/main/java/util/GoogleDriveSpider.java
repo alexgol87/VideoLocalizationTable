@@ -25,7 +25,7 @@ public class GoogleDriveSpider implements Runnable {
         GeneralUtil.videoRepositoryFilling();
         // 19s
 
-        /*DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
+        DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
         dropboxApiUtil.getDropboxFilesAndLinks();
         // 100s
 
@@ -33,9 +33,9 @@ public class GoogleDriveSpider implements Runnable {
         dropboxApiUtil.getDropboxFilesAndLinks();
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive);
-*/
+
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
-        //GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
 
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
 
