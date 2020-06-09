@@ -16,7 +16,7 @@
 <br/>
     <form action="" method="post" name="updateForm">
         <input type="hidden" name="runUpdate" value="yes">
-        <button type="submit" class="submit" />Update table</button>
+        <button type="submit" class="submit" <c:if test="${requestScope.lockUpdateButton == 'true'}">disabled>Please, wait 5 minutes</c:if><c:if test="${requestScope.lockUpdateButton != 'true'}">>Update table</c:if></button>
     </form>
 </br/>
 <div class="lastUpdateTime">${executionTime}</div>

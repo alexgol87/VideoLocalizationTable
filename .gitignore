@@ -27,5 +27,5 @@ target
 out
 /src/test/
 tmp
-/src/main/resources/credentials.json
 /tokens/
+/src/main/resources/credentials.json

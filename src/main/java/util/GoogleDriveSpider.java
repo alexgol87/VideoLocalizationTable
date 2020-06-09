@@ -5,6 +5,11 @@ import com.google.api.services.sheets.v4.Sheets;
 import dao.InMemoryVideoAndLocaleRepository;
 import dao.InMemoryVideoRepository;
 
+import java.time.Instant;
+
+import static util.GeneralUtil.endTimeFixing;
+import static util.GeneralUtil.startTimeFixing;
+
 public class GoogleDriveSpider {
 
     static final InMemoryVideoAndLocaleRepository videoAndLocaleRepository = new InMemoryVideoAndLocaleRepository();
@@ -13,13 +18,14 @@ public class GoogleDriveSpider {
 
     public GoogleDriveSpider() {
         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
-
         GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive);
-
         GeneralUtil.videoRepositoryFilling();
+        // 19s
 
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
         dropboxApiUtil.getDropboxFilesAndLinks();
+        // 100s
+
         dropboxApiUtil.newPreviewUploadingToDropbox();
         dropboxApiUtil.getDropboxFilesAndLinks();
 
