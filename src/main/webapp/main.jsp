@@ -14,11 +14,17 @@
 <div class="header"><h2>Video Localization Table Updater</h2></div>
 <div class="lastUpdateTime">Last update time: ${requestScope.lastUpdateTime}</div>
 <br/>
-    <form action="" method="post" name="updateForm">
-        <input type="hidden" name="runUpdate" value="yes">
-        <button type="submit" class="submit" <c:if test="${requestScope.lockUpdateButton == 'true'}">disabled>Please, wait 5 minutes</c:if><c:if test="${requestScope.lockUpdateButton != 'true'}">>Update table</c:if></button>
-    </form>
+<form action="" method="post" name="updateForm">
+    <c:if test="${requestScope.lockUpdate != 'true'}"><input type="hidden" name="runUpdate" value="yes"></c:if>
+    <c:if test="${requestScope.lockUpdate == 'true'}"><input type="hidden" name="runUpdate" value="no"></c:if>
+    <button type="submit" class="submit"><c:if
+            test="${requestScope.lockUpdate == 'true'}">Check update status</c:if><c:if
+            test="${requestScope.lockUpdate != 'true'}">Update table</c:if></button>
+</form>
 </br/>
-<div class="lastUpdateTime">${executionTime}</div>
+<div class="lastUpdateTime">
+    <c:if test="${requestScope.lockUpdate == 'true'}">Please, wait until the update is finished</c:if>
+    <c:if test="${requestScope.tableReady == 'true'}">The table is updated, please, check. Execution time: ${requestScope.execTime}</c:if>
+</div>
 </body>
 </html>
