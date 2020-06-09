@@ -40,9 +40,13 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (thread != null) thread.interrupt();
-        thread = new Thread(task);
-        req.setAttribute("lockUpdate", FALSE);
+        if (thread == null) thread = new Thread(task);
+        else if ((thread.getState() == Thread.State.RUNNABLE)) {
+            req.setAttribute("lockUpdate", TRUE);
+            req.setAttribute("tableReady", FALSE);
+        } else {
+            req.setAttribute("lockUpdate", FALSE);
+        }
         lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         req.setAttribute("lastUpdateTime", lastUpdateTime);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
