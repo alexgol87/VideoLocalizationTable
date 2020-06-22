@@ -1,5 +1,6 @@
 package web;
 
+import util.DropboxApiUtil;
 import util.GoogleDriveApiUtil;
 import util.GoogleDriveSpider;
 
@@ -23,6 +24,8 @@ public class MainServlet extends HttpServlet {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
             if (thread.getState() == Thread.State.TERMINATED) thread = new Thread(task);
             thread.start();
+            if (req.getParameter("updateVideoPreview") != null) DropboxApiUtil.startUpdateVideoPreview();
+            else DropboxApiUtil.stopUpdateVideoPreview();
             req.setAttribute("lockUpdate", TRUE);
             req.setAttribute("tableReady", FALSE);
         } else if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED)) {
@@ -49,6 +52,7 @@ public class MainServlet extends HttpServlet {
         }
         lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         req.setAttribute("lastUpdateTime", lastUpdateTime);
+        //TODO Google authorization https://coderoad.ru/15938514/Java-%D0%B8-Google-Spreadsheets-API-%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-OAuth-2-0
         req.getRequestDispatcher("main.jsp").forward(req, resp);
     }
 }

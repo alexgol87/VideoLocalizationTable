@@ -14,11 +14,15 @@
 <div class="lastUpdateTime">Last update time: ${requestScope.lastUpdateTime}</div>
 <br/>
 <form action="" method="post" name="updateForm">
-    <c:if test="${requestScope.lockUpdate != 'true'}"><input type="hidden" name="runUpdate" value="yes"></c:if>
-    <c:if test="${requestScope.lockUpdate == 'true'}"><input type="hidden" name="runUpdate" value="no"></c:if>
-    <button type="submit" class="submit"><c:if
-            test="${requestScope.lockUpdate == 'true'}">Check update status</c:if><c:if
-            test="${requestScope.lockUpdate != 'true'}">Update table</c:if></button>
+    <c:if test="${requestScope.lockUpdate == 'true'}">
+        <input type="hidden" name="runUpdate" value="no">
+        <button type="submit" class="submit">Check update status</button>
+    </c:if>
+    <c:if test="${requestScope.lockUpdate != 'true'}">
+        <input type="hidden" name="runUpdate" value="yes">
+        <button type="submit" class="submit">Update table</button>
+        &nbsp;<input type="checkbox" name="updateVideoPreview" value="yes"> Update Video Preview
+    </c:if>
 </form>
 </br/>
 <div class="lastUpdateTime">

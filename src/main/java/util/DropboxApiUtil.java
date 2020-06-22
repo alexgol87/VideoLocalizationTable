@@ -23,6 +23,8 @@ public class DropboxApiUtil {
     private static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/AwemVideoCreativesPreview").build();
     private DbxClientV2 client;
     private static final String DIRECTORY_FOR_PREVIEW = "tmp/";
+    private static final String DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW = "/VideoPreviewFolder";
+    private static boolean updateVideoPreview = false;
 
     public DropboxApiUtil() {
         //InputStream inputStream = getClass().getClassLoader().getResourceAsStream("dropbox.key");
@@ -31,10 +33,28 @@ public class DropboxApiUtil {
         this.client = new DbxClientV2(config, ACCESS_TOKEN);
     }
 
+    void createDropboxVideoPreviewFolder() {
+        try {
+            if (updateVideoPreview) client.files().delete(DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW);
+            client.files().createFolder(DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void startUpdateVideoPreview() {
+        updateVideoPreview = true;
+    }
+
+    public static void stopUpdateVideoPreview() {
+        updateVideoPreview = false;
+    }
+
     // Get all Dropbox uploaded files and links
     void getDropboxFilesAndLinks() {
         try {
-            ListFolderResult result = client.files().listFolder("");
+            createDropboxVideoPreviewFolder();
+            ListFolderResult result = client.files().listFolder(DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW);
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
                     int videoNumber = parseIntSafely(metadata.getName().replace(".jpg", ""));
@@ -75,7 +95,7 @@ public class DropboxApiUtil {
                             InputStream in = new URL(v.getThumbnailLink()).openStream();
                             Files.copy(in, Paths.get(DIRECTORY_FOR_PREVIEW + v.getVideoNumber() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
                             InputStream in2 = new FileInputStream(String.valueOf(Paths.get(DIRECTORY_FOR_PREVIEW + v.getVideoNumber() + ".jpg")));
-                            client.files().uploadBuilder("/" + v.getVideoNumber() + ".jpg").uploadAndFinish(in2);
+                            client.files().uploadBuilder(DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW + "/" + v.getVideoNumber() + ".jpg").uploadAndFinish(in2);
                             in.close();
                             in2.close();
                         } catch (IOException | DbxException ex) {

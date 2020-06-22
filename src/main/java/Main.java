@@ -12,7 +12,7 @@ public class Main {
         System.out.println("Last update time: " + lastUpdateTime);
         Instant start = startTimeFixing();
         Runnable task = GoogleDriveSpider::new;
-         Thread thread = new Thread(task);
+        Thread thread = new Thread(task);
         thread.start();
         thread.join();
         System.out.println(endTimeFixing(start));
