@@ -23,9 +23,9 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
             if (thread.getState() == Thread.State.TERMINATED) thread = new Thread(task);
-            thread.start();
             if (req.getParameter("updateVideoPreview") != null) DropboxApiUtil.startUpdateVideoPreview();
             else DropboxApiUtil.stopUpdateVideoPreview();
+            thread.start();
             req.setAttribute("lockUpdate", TRUE);
             req.setAttribute("tableReady", FALSE);
         } else if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED)) {
