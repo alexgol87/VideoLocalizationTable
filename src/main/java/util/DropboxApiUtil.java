@@ -58,7 +58,7 @@ public class DropboxApiUtil {
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
                     int videoNumber = parseIntSafely(metadata.getName().replace(".jpg", ""));
-                    if (videoRepository.ifContainsVideo(videoNumber) && !videoRepository.getByVideo(videoNumber).getThumbnailLink().contains("dropbox.com")) {
+                    if (videoRepository.ifContainsCreative(videoNumber) && !videoRepository.getByCreativeNumber(videoNumber).getThumbnailLink().contains("dropbox.com")) {
                         ListSharedLinksResult result2 = client.sharing().listSharedLinksBuilder()
                                 .withPath(metadata.getPathLower()).withDirectOnly(true).start();
                         if (!result2.getLinks().isEmpty()) {
@@ -93,9 +93,9 @@ public class DropboxApiUtil {
                     if (!v.getThumbnailLink().contains("dropbox.com") && !v.getThumbnailLink().isEmpty())
                         try {
                             InputStream in = new URL(v.getThumbnailLink()).openStream();
-                            Files.copy(in, Paths.get(DIRECTORY_FOR_PREVIEW + v.getVideoNumber() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
-                            InputStream in2 = new FileInputStream(String.valueOf(Paths.get(DIRECTORY_FOR_PREVIEW + v.getVideoNumber() + ".jpg")));
-                            client.files().uploadBuilder(DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW + "/" + v.getVideoNumber() + ".jpg").uploadAndFinish(in2);
+                            Files.copy(in, Paths.get(DIRECTORY_FOR_PREVIEW + v.getCreativeNumber() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+                            InputStream in2 = new FileInputStream(String.valueOf(Paths.get(DIRECTORY_FOR_PREVIEW + v.getCreativeNumber() + ".jpg")));
+                            client.files().uploadBuilder(DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW + "/" + v.getCreativeNumber() + ".jpg").uploadAndFinish(in2);
                             in.close();
                             in2.close();
                         } catch (IOException | DbxException ex) {

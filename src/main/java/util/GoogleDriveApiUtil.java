@@ -138,7 +138,7 @@ public class GoogleDriveApiUtil {
                     .forEach(v -> {
 
                         localizationValues.add(new ArrayList<>());
-                        localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getFolderLink() + "\"; " + v.getVideoNumber() + ")");
+                        localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getFolderLink() + "\"; " + v.getCreativeNumber() + ")");
                         localizationValues.get(lineIndex.get()).add(v.getEnData());
                         localizationValues.get(lineIndex.get()).add(v.getDeData());
                         localizationValues.get(lineIndex.get()).add(v.getFrData());

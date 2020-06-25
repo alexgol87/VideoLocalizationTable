@@ -1,7 +1,7 @@
 package model;
 
-public class Video {
-    private Integer videoNumber;
+public class Creative {
+    private Integer creativeNumber;
     private String enData;
     private String deData;
     private String frData;
@@ -11,8 +11,8 @@ public class Video {
     private String thumbnailLink;
     private String folderLink;
 
-    public Integer getVideoNumber() {
-        return videoNumber;
+    public Integer getCreativeNumber() {
+        return creativeNumber;
     }
 
     public String getEnData() {
@@ -51,8 +51,8 @@ public class Video {
         this.folderLink = folderLink;
     }
 
-    public Video(Integer videoNumber, String enData, String deData, String frData, String jaData, String mxData, String zhsData, String thumbnailLink, String folderLink) {
-        this.videoNumber = videoNumber;
+    public Creative(Integer creativeNumber, String enData, String deData, String frData, String jaData, String mxData, String zhsData, String thumbnailLink, String folderLink) {
+        this.creativeNumber = creativeNumber;
         this.enData = enData;
         this.deData = deData;
         this.frData = frData;

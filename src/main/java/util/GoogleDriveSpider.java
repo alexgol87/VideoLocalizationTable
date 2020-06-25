@@ -3,7 +3,7 @@ package util;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.sheets.v4.Sheets;
 import dao.InMemoryVideoAndLocaleRepository;
-import dao.InMemoryVideoRepository;
+import dao.InMemoryCreativeRepository;
 
 import java.time.Instant;
 
@@ -13,7 +13,7 @@ import static util.GeneralUtil.startTimeFixing;
 public class GoogleDriveSpider implements Runnable {
 
     static final InMemoryVideoAndLocaleRepository videoAndLocaleRepository = new InMemoryVideoAndLocaleRepository();
-    static final InMemoryVideoRepository videoRepository = new InMemoryVideoRepository();
+    static final InMemoryCreativeRepository videoRepository = new InMemoryCreativeRepository();
     public static String execTime;
 
     public GoogleDriveSpider() {
@@ -21,8 +21,8 @@ public class GoogleDriveSpider implements Runnable {
         Instant start = startTimeFixing();
 
         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
-        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive);
-        GeneralUtil.videoRepositoryFilling();
+        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "mimeType = 'video/mp4' and trashed = false");
+        GeneralUtil.creativeRepositoryFilling(videoRepository);
         // 19s
 
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();

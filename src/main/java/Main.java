@@ -1,4 +1,5 @@
 import util.GoogleDriveApiUtil;
+import util.GoogleDriveBannerSpider;
 import util.GoogleDriveSpider;
 
 import java.time.Instant;
@@ -11,7 +12,8 @@ public class Main {
         String lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         System.out.println("Last update time: " + lastUpdateTime);
         Instant start = startTimeFixing();
-        Runnable task = GoogleDriveSpider::new;
+        Runnable task = GoogleDriveBannerSpider::new;
+        //Runnable task = GoogleDriveSpider::new;
         Thread thread = new Thread(task);
         thread.start();
         thread.join();
