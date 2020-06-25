@@ -11,8 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static util.GoogleDriveApiUtil.getFileListFromDriveAPI;
-import static util.GoogleDriveSpider.videoAndLocaleRepository;
-import static util.GoogleDriveSpider.videoRepository;
+import static util.GoogleDriveSpider.*;
 
 public class GeneralUtil {
     static int parseIntSafely(String s) {
@@ -32,7 +31,7 @@ public class GeneralUtil {
     public static void videoAndLocaleRepositoryFilling(Drive service) {
         String pageToken = null;
         while (true) {
-            FileList result = getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink)");
+            FileList result = getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime)");
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
@@ -44,12 +43,34 @@ public class GeneralUtil {
                         if (!videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[2]))
                             videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[2]);
                         videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[2], fileNameParsedArray[0], file.getThumbnailLink());
+                        checkNameAndSizeOfCreative(file, fileNameParsedArray);
                     }
                 }
                 pageToken = result.getNextPageToken();
                 if (pageToken == null) break;
             }
         }
+    }
+
+    public static void checkNameAndSizeOfCreative(File file, String[] fileNameParsedArray) {
+        try {
+            int videoWidth = file.getVideoMediaMetadata().getWidth();
+            int videoHeight = file.getVideoMediaMetadata().getHeight();
+            if (videoWidth != Integer.parseInt(fileNameParsedArray[0].split("x")[0]) || videoHeight != Integer.parseInt(fileNameParsedArray[0].split("x")[1])) {
+                String error = String.format("File %s has wrong size. Size from name: %s, size from file: %s", file.getName().toLowerCase(), fileNameParsedArray[0], file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight());
+                //System.out.println(error);
+                videoErrors.add(error);
+            }
+        } catch (NullPointerException e) {
+            String error = String.format("File %s is corrupted", file.getName().toLowerCase());
+            //System.out.println(error);
+            videoErrors.add(error);
+        } catch (NumberFormatException e) {
+            String error = String.format("File %s contains the Russian letter 'x'", file.getName().toLowerCase());
+            //System.out.println(error);
+            videoErrors.add(error);
+        }
+
     }
 
     public static void getFolderLinksFromGoogleDrive(Drive service) {

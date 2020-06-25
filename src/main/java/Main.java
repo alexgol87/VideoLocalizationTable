@@ -4,6 +4,7 @@ import util.GoogleDriveSpider;
 import java.time.Instant;
 
 import static util.GeneralUtil.*;
+import static util.GoogleDriveSpider.videoErrors;
 
 public class Main {
 
@@ -16,5 +17,8 @@ public class Main {
         thread.start();
         thread.join();
         System.out.println(endTimeFixing(start));
+        for (String error : videoErrors) {
+            System.out.println(error);
+        }
     }
 }

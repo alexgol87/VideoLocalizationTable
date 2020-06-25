@@ -26,8 +26,14 @@
 </form>
 </br/>
 <div class="lastUpdateTime">
-    <c:if test="${requestScope.lockUpdate == 'true'}">Please, wait until the update is finished</c:if>
-    <c:if test="${requestScope.tableReady == 'true'}">The table is updated, please, check. Execution time: ${requestScope.execTime}</c:if>
-</div>
+    <c:if test="${requestScope.lockUpdate == 'true'}">Please, wait until the update is finished</div></c:if>
+    <c:if test="${requestScope.tableReady == 'true'}">
+        The table is updated, please, check. Execution time: ${requestScope.execTime}</div><br /><br />
+        <div class="error">
+        <c:forEach items="${requestScope.videoErrors}" var="error">
+            ${error}<br />
+        </c:forEach>
+        </div>
+    </c:if>
 </body>
 </html>

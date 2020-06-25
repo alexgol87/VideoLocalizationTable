@@ -113,6 +113,7 @@ public class GoogleDriveApiUtil {
                     .setPageSize(1000)
                     .setPageToken(pageToken)
                     .setFields(fields)
+                    .setOrderBy("modifiedTime")
                     .execute();
         } catch (IOException e) {
             e.printStackTrace();

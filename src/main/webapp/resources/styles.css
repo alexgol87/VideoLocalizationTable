@@ -5,6 +5,7 @@
 body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;}
 .header h2, .lastUpdateTime {font-family:Georgia, Times, "Times New Roman", serif;}
 .form_hint, .required_notification {font-size: 11px;}
+.error {font-family:"Times New Roman"; font-size: 11px;}
 
 /* === List Styles === */
 .contact_form ul {
