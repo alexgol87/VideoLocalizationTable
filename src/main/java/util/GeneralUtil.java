@@ -24,7 +24,7 @@ public class GeneralUtil {
                 .forEach(v -> {
                     if (!videoRepository.ifContainsVideo(v.getVideoNumber()))
                         videoRepository.add(v.getVideoNumber());
-                    videoRepository.update(v.getVideoNumber(), v.getLocale(), v.getAllData(), v.getDspData(), v.getFacebookData(), v.getNetworkData(), v.getSquareData(), v.getFbfData(), v.getThumbnailLink());
+                    videoRepository.update(v.getVideoNumber(), v.getLocale(), v.getAllData(), v.getDspData(), v.getLandscapeData(), v.getPortraitData(), v.getSquareData(), v.getFbfData(), v.getThumbnailLink());
                 });
     }
 

@@ -79,12 +79,12 @@ public class VideoAndLocale {
         return !this.video1080x1080 && this.video1080x1350;
     }
 
-    public boolean getFacebookData() {
-        return this.video1080x1080 && this.video1080x1350;
+    public boolean getLandscapeData() {
+        return this.video1920x1080;
     }
 
-    public boolean getNetworkData() {
-        return this.video1920x1080 && this.video1080x1920;
+    public boolean getPortraitData() {
+        return this.video1080x1920;
     }
 
     public boolean getDspData() {
@@ -92,7 +92,7 @@ public class VideoAndLocale {
     }
 
     public boolean getAllData() {
-        return this.getFacebookData() && this.getNetworkData() && this.getDspData();
+        return this.getLandscapeData() && this.getPortraitData() && this.getDspData() && this.getSquareData() && this.getFbfData();
     }
 
 }
