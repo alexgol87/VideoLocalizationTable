@@ -72,11 +72,11 @@ public class VideoAndLocale {
     }
 
     public boolean getSquareData() {
-        return this.video1080x1080 && !this.video1080x1350;
+        return this.video1080x1080;
     }
 
     public boolean getFbfData() {
-        return !this.video1080x1080 && this.video1080x1350;
+        return this.video1080x1350;
     }
 
     public boolean getLandscapeData() {
