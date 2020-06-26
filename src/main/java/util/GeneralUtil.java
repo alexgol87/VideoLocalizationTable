@@ -31,7 +31,7 @@ public class GeneralUtil {
     public static void videoAndLocaleRepositoryFilling(Drive service) {
         String pageToken = null;
         while (true) {
-            FileList result = getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime)");
+            FileList result = getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser)");
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
@@ -57,16 +57,16 @@ public class GeneralUtil {
             int videoWidth = file.getVideoMediaMetadata().getWidth();
             int videoHeight = file.getVideoMediaMetadata().getHeight();
             if (videoWidth != Integer.parseInt(fileNameParsedArray[0].split("x")[0]) || videoHeight != Integer.parseInt(fileNameParsedArray[0].split("x")[1])) {
-                String error = String.format("File %s has wrong size. Size from name: %s, size from file: %s", file.getName().toLowerCase(), fileNameParsedArray[0], file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight());
+                String error = String.format("File %s has wrong size. Size from name: %s, size from file: %s. lastModifyingUser: %s", file.getName().toLowerCase(), fileNameParsedArray[0], file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 videoErrors.add(error);
             }
         } catch (NullPointerException e) {
-            String error = String.format("File %s is corrupted", file.getName().toLowerCase());
+            String error = String.format("File %s is corrupted. lastModifyingUser: %s", file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
             //System.out.println(error);
             videoErrors.add(error);
         } catch (NumberFormatException e) {
-            String error = String.format("File %s contains the Russian letter 'x'", file.getName().toLowerCase());
+            String error = String.format("File %s contains the Russian letter 'x'. lastModifyingUser: %s", file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
             //System.out.println(error);
             videoErrors.add(error);
         }

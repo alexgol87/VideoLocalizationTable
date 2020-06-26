@@ -32,7 +32,7 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("lockUpdate", FALSE);
             req.setAttribute("tableReady", TRUE);
             req.setAttribute("execTime", GoogleDriveSpider.execTime);
-            req.setAttribute("videoErrors", GoogleDriveSpider.videoErrors);
+            req.setAttribute("videoErrors", GoogleDriveSpider.videoErrors.size());
             lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
         } else if ((thread.getState() == Thread.State.RUNNABLE)) {
             req.setAttribute("lockUpdate", TRUE);

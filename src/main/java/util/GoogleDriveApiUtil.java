@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static util.GoogleDriveSpider.videoErrors;
 import static util.GoogleDriveSpider.videoRepository;
 
 public class GoogleDriveApiUtil {
@@ -33,7 +34,8 @@ public class GoogleDriveApiUtil {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String RANGE_UPDATE_LASTUPDATETIME = "video main!Q1:R1";
     private static final String RANGE_UPDATE_LOCALIZATIONTABLE = "video main!A2:I";
-    private static final String RANGE_GET_LASTUPDATETIME = "Q1:Q1";
+    private static final String RANGE_GET_LASTUPDATETIME = "video main!Q1:Q1";
+    private static final String RANGE_UPDATE_VIDEOERRORS = "video main!V2:V200";
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -157,6 +159,41 @@ public class GoogleDriveApiUtil {
             service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_LOCALIZATIONTABLE, requestBody)
                     .setValueInputOption(valueInputOption)
                     .execute();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption) {
+        try {
+            // clear old values
+            ClearValuesRequest requestBodyClear = new ClearValuesRequest();
+            Sheets.Spreadsheets.Values.Clear request =
+                    service.spreadsheets().values().clear(spreadsheetId, RANGE_UPDATE_VIDEOERRORS, requestBodyClear);
+            request.execute();
+
+            ValueRange requestBody = new ValueRange();
+            requestBody.setRange(RANGE_UPDATE_VIDEOERRORS);
+            List<List<Object>> localizationValues = new ArrayList<>();
+            AtomicInteger lineIndex = new AtomicInteger();
+
+            videoErrors
+                    .stream()
+                    .forEach(v -> {
+
+                        localizationValues.add(new ArrayList<>());
+                        localizationValues.get(lineIndex.get()).add(v);
+                        lineIndex.getAndIncrement();
+
+                    });
+
+            requestBody.setValues(localizationValues);
+
+            service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_VIDEOERRORS, requestBody)
+                    .setValueInputOption(valueInputOption)
+                    .execute();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -188,7 +225,7 @@ public class GoogleDriveApiUtil {
         ValueRange response = null;
         try {
             Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, RANGE_GET_LASTUPDATETIME);
-             response = request.execute();
+            response = request.execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

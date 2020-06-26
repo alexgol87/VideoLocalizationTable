@@ -26,14 +26,17 @@
 </form>
 </br/>
 <div class="lastUpdateTime">
-    <c:if test="${requestScope.lockUpdate == 'true'}">Please, wait until the update is finished</div></c:if>
-    <c:if test="${requestScope.tableReady == 'true'}">
-        The table is updated, please, check. Execution time: ${requestScope.execTime}</div><br /><br />
-        <div class="error">
-        <c:forEach items="${requestScope.videoErrors}" var="error">
-            ${error}<br />
-        </c:forEach>
-        </div>
+    <c:if test="${requestScope.lockUpdate == 'true'}">Please, wait until the update is finished
     </c:if>
+    <c:if test="${requestScope.tableReady == 'true'}">
+    The table is updated, please, check. Execution time: ${requestScope.execTime}.
+
+    <c:if test="${requestScope.videoErrors > 0}">&nbsp;<a
+        href="https://docs.google.com/spreadsheets/d/1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI/edit?pli=1#gid=1369950641&range=V1"
+        class="awemlink" target="_blank">${requestScope.videoErrors} errors found.
+        </a>
+    </c:if>
+</div>
+</c:if>
 </body>
 </html>
