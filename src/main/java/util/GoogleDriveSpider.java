@@ -6,11 +6,10 @@ import dao.InMemoryVideoAndLocaleRepository;
 import dao.InMemoryVideoRepository;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
-
-import static util.GeneralUtil.endTimeFixing;
-import static util.GeneralUtil.startTimeFixing;
 
 public class GoogleDriveSpider implements Runnable {
 
@@ -18,15 +17,16 @@ public class GoogleDriveSpider implements Runnable {
     static final InMemoryVideoRepository videoRepository = new InMemoryVideoRepository();
     public static String execTime;
     public static Set<String> videoErrors = new LinkedHashSet<>();
+    public static Map<String, String> folderDictionary = new HashMap<>();
 
     public GoogleDriveSpider() {
 
-        Instant start = startTimeFixing();
+        Instant start = GeneralUtil.startTimeFixing();
 
         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
+        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive);
         GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive);
         GeneralUtil.videoRepositoryFilling();
-        // 19s
 
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
         dropboxApiUtil.getDropboxFilesAndLinks();
@@ -42,7 +42,7 @@ public class GoogleDriveSpider implements Runnable {
 
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
 
-        execTime = endTimeFixing(start);
+        execTime = GeneralUtil.endTimeFixing(start);
     }
 
     @Override
