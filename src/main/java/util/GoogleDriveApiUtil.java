@@ -29,7 +29,6 @@ import static util.GoogleDriveSpider.videoRepository;
 
 public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String RANGE_UPDATE_LASTUPDATETIME = "video main!Q1:R1";
@@ -56,11 +55,8 @@ public class GoogleDriveApiUtil {
      */
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        //InputStream in = GoogleDriveSpider.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        if (CREDENTIALS == null) throw new NullPointerException("Credentials not found");
         InputStream in = new ByteArrayInputStream(CREDENTIALS.getBytes());
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-        }
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
