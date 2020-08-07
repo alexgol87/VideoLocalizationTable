@@ -83,4 +83,8 @@ public class InMemoryVideoAndLocaleRepository {
     public boolean ifContainsVideoAndLocale(String videoAndLocale) {
         return videoAndLocaleMap.containsKey(videoAndLocale);
     }
+
+    public void clear() {
+        videoAndLocaleMap.clear();
+    }
 }

@@ -21,6 +21,11 @@ public class GoogleDriveSpider implements Runnable {
 
     public GoogleDriveSpider() {
 
+        videoRepository.clear();
+        videoAndLocaleRepository.clear();
+        videoErrors.clear();
+        folderDictionary.clear();
+
         Instant start = GeneralUtil.startTimeFixing();
 
         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();

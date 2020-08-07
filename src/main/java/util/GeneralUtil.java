@@ -28,7 +28,7 @@ public class GeneralUtil {
     public static void videoAndLocaleRepositoryFilling(Drive service) {
         String pageToken = null;
         while (true) {
-            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser, parents)");
+            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser, parents, size)");
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
@@ -55,6 +55,16 @@ public class GeneralUtil {
             int videoHeight = file.getVideoMediaMetadata().getHeight();
             if (videoWidth != Integer.parseInt(fileNameParsedArray[0].split("x")[0]) || videoHeight != Integer.parseInt(fileNameParsedArray[0].split("x")[1])) {
                 String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight(), file.getLastModifyingUser().getDisplayName());
+                //System.out.println(error);
+                GoogleDriveSpider.videoErrors.add(error);
+            }
+            if (file.getName().contains("mp4.mp4")) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s has wrong name. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                //System.out.println(error);
+                GoogleDriveSpider.videoErrors.add(error);
+            }
+            if (file.getSize() > 52428800) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s exceeds size of 50 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 GoogleDriveSpider.videoErrors.add(error);
             }

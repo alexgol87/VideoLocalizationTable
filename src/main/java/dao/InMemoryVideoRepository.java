@@ -123,5 +123,9 @@ public class InMemoryVideoRepository {
     public List<Video> getAll() {
         return videoMap.values().stream().collect(Collectors.toList());
     }
+
+    public void clear() {
+        videoMap.clear();
+    }
 }
 
