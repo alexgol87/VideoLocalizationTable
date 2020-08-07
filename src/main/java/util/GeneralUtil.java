@@ -63,8 +63,8 @@ public class GeneralUtil {
                 //System.out.println(error);
                 GoogleDriveSpider.videoErrors.add(error);
             }
-            if (file.getSize() > 52428800) {
-                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s exceeds size of 50 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+            if (file.getSize() > 41943040) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s exceeds size of 40 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 GoogleDriveSpider.videoErrors.add(error);
             }
