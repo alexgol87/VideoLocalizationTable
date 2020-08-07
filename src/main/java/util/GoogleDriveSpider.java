@@ -23,7 +23,6 @@ public class GoogleDriveSpider implements Runnable {
 
         videoRepository.clear();
         videoAndLocaleRepository.clear();
-        videoErrors.clear();
         folderDictionary.clear();
 
         Instant start = GeneralUtil.startTimeFixing();
