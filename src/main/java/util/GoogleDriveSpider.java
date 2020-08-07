@@ -28,23 +28,23 @@ public class GoogleDriveSpider implements Runnable {
 
         Instant start = GeneralUtil.startTimeFixing();
 
-         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
-         GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive);
-         GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "mimeType = 'video/mp4' and trashed = false");
-         GeneralUtil.videoRepositoryFilling(videoRepository);
+        Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
+        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive);
+        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "mimeType = 'video/mp4' and trashed = false");
+        GeneralUtil.videoRepositoryFilling(videoRepository);
         // 19s
 
-        //  DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
-        //   dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "v");
+        DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "v");
         // 100s
-        //  dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "v");
-        //  dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "v");
+        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "v");
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "v");
 
-        //  GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v");
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v");
 
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
-        //   GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "v");
-        //  GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "v");
+        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
 
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "v");
 

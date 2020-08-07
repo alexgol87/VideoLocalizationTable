@@ -23,26 +23,21 @@ public class GoogleDriveBannerSpider implements Runnable {
 
         Instant start = startTimeFixing();
 
-        //Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
+        Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
 
-        //GeneralUtil.bannerAndLocaleRepositoryFilling(serviceDrive, "(mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false");
-        // GeneralUtil.bannerRepositoryFilling(bannerRepository);
+        GeneralUtil.bannerAndLocaleRepositoryFilling(serviceDrive, "(mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false");
+        GeneralUtil.bannerRepositoryFilling(bannerRepository);
 
-        // DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
-        // dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "b");
+        DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
+        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "b");
 
-        // dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, "b");
-        //  dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "b");
+        dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, "b");
+        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "b");
 
-        // GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b");
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b");
 
-          Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
-        // GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "b");
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "b");
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "b");
 
         GeneralUtil.execTime = endTimeFixing(start);

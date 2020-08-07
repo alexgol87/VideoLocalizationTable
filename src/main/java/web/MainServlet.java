@@ -11,8 +11,9 @@ import java.io.IOException;
 
 public class MainServlet extends HttpServlet {
 
-    private static Runnable task = null;
-    private static Thread thread = null;
+    private static Runnable taskVideo = GoogleDriveSpider::new;
+    private static Runnable taskBanner = GoogleDriveBannerSpider::new;
+    private static Thread thread = new Thread();
     private static String lastUpdateTimeVideo;
     private static String lastUpdateTimeBanner;
     private static final String TRUE = "true";
@@ -21,9 +22,9 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
-            if (req.getParameter("creativeType").equals("video")) task = GoogleDriveSpider::new;
-            else task = GoogleDriveBannerSpider::new;
-            if (thread.getState() == Thread.State.TERMINATED) thread = new Thread(task);
+            //if (thread.getState() == Thread.State.TERMINATED)
+                if (req.getParameter("creativeType").equals("video")) thread = new Thread(taskVideo);
+                else thread = new Thread(taskBanner);
             if (req.getParameter("updatePreview") != null) {
                 if (req.getParameter("creativeType").equals("video")) DropboxApiUtil.startUpdateVideoPreview();
                 else DropboxApiUtil.startUpdateBannerPreview();
@@ -52,9 +53,7 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //if (req.getParameter("creativeType").equals("banner")) task = GoogleDriveBannerSpider::new;
-        //else task = GoogleDriveSpider::new;
-        if (thread == null) thread = new Thread(task);
+        if (thread == null) thread = new Thread();
         else if ((thread.getState() == Thread.State.RUNNABLE)) {
             req.setAttribute("lockUpdate", TRUE);
             req.setAttribute("tableReady", FALSE);
