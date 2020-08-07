@@ -9,7 +9,7 @@ import static util.GeneralUtil.*;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        String lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI");
+        String lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "b");
         System.out.println("Last update time: " + lastUpdateTime);
         Instant start = startTimeFixing();
         Runnable task = GoogleDriveBannerSpider::new;

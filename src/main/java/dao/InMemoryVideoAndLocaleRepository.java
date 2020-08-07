@@ -17,7 +17,7 @@ public class InMemoryVideoAndLocaleRepository {
 
     public void update(String keyVideoAndLocale, String videoSize, String newThumbnailLink) {
         VideoAndLocale tmpVideoAndLocale = this.getByVideoAndLocale(keyVideoAndLocale);
-        int videoNumber = tmpVideoAndLocale.getVideoNumber();
+        int videoNumber = tmpVideoAndLocale.getCreativeNumber();
         boolean video1920x1080 = tmpVideoAndLocale.isVideo1920x1080();
         boolean video1080x1920 = tmpVideoAndLocale.isVideo1080x1920();
         boolean video1080x1080 = tmpVideoAndLocale.isVideo1080x1080();
@@ -33,6 +33,7 @@ public class InMemoryVideoAndLocaleRepository {
             case "1920x1080":
                 video1920x1080 = true;
                 if (locale.equals("en")) thumbnailLink = newThumbnailLink;
+                if (!locale.equals("en") && thumbnailLink == null) thumbnailLink = newThumbnailLink;
                 break;
             case "1080x1920":
                 video1080x1920 = true;
@@ -49,6 +50,7 @@ public class InMemoryVideoAndLocaleRepository {
             case "960x640":
                 video960x640 = true;
                 if (locale.equals("en")) thumbnailLink = newThumbnailLink;
+                if (!locale.equals("en") && thumbnailLink == null) thumbnailLink = newThumbnailLink;
                 break;
             case "640x960":
                 video640x960 = true;
@@ -57,6 +59,7 @@ public class InMemoryVideoAndLocaleRepository {
             case "1024x768":
                 video1024x768 = true;
                 if (locale.equals("en")) thumbnailLink = newThumbnailLink;
+                if (!locale.equals("en") && thumbnailLink == null) thumbnailLink = newThumbnailLink;
                 break;
             case "768x1024":
                 video768x1024 = true;
@@ -79,5 +82,9 @@ public class InMemoryVideoAndLocaleRepository {
 
     public boolean ifContainsVideoAndLocale(String videoAndLocale) {
         return videoAndLocaleMap.containsKey(videoAndLocale);
+    }
+
+    public void clear() {
+        videoAndLocaleMap.clear();
     }
 }

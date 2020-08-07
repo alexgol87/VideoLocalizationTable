@@ -10,27 +10,40 @@ public class BannerAndLocale implements CreativeAndLocale {
     private final String locale;
     private final String thumbnailLink;
 
-    public int getBannerNumber() {
+    public int getCreativeNumber() {
         return bannerNumber;
     }
 
-    public boolean isBanner1600x900() {
-        return banner1600x900;
+    @Override
+    public boolean getDspData() {
+        return false;
     }
 
-    public boolean isBanner900x1600() {
-        return banner900x1600;
+    @Override
+    public boolean getFbfData() {
+        return false;
     }
 
-    public boolean isBanner800x800() {
+    @Override
+    public boolean getSquareData() {
         return banner800x800;
     }
 
-    public boolean isEtc() {
+    @Override
+    public boolean getLandscapeData() {
+        return banner1600x900;
+    }
+
+    @Override
+    public boolean getPortraitData() {
+        return banner900x1600;
+    }
+
+    public boolean getEtcData() {
         return etc;
     }
 
-    public boolean isAll() {
+    public boolean getAllData() {
         return (banner1600x900 && banner900x1600 && banner800x800 && etc);
     }
 

@@ -15,7 +15,7 @@ public class InMemoryCreativeRepository {
         creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, "", "", "", "", "", "", "", ""));
     }
 
-    public void update(Integer creativeNumber, String locale, boolean isAllData, boolean isDspData, boolean isSquareData, boolean isFbfData, boolean isLandscapeData, boolean isPortraitData, boolean isEtcData, String thumbnailLink) {
+    public void update(Integer creativeNumber, String locale, boolean isAllData, boolean isSquareData, boolean isLandscapeData, boolean isPortraitData, boolean isDspData, boolean isFbfData, boolean isEtcData, String thumbnailLink) {
         Creative tmpCreative = this.getByCreativeNumber(creativeNumber);
         String enData = tmpCreative.getEnData();
         String deData = tmpCreative.getDeData();
@@ -129,6 +129,10 @@ public class InMemoryCreativeRepository {
 
     public List<Creative> getAll() {
         return creativeTreeMap.values().stream().collect(Collectors.toList());
+    }
+
+    public void clear() {
+        creativeTreeMap.clear();
     }
 }
 

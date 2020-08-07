@@ -18,11 +18,11 @@ public class InMemoryBannerAndLocaleRepository {
 
     public void update(String keyBannerAndLocale, String bannerSize, String newThumbnailLink) {
         BannerAndLocale tmpBannerAndLocale = (BannerAndLocale) this.getByCreativeAndLocale(keyBannerAndLocale);
-        int bannerNumber = tmpBannerAndLocale.getBannerNumber();
-        boolean banner1600x900 = tmpBannerAndLocale.isBanner1600x900();
-        boolean banner900x1600 = tmpBannerAndLocale.isBanner900x1600();
-        boolean banner800x800 = tmpBannerAndLocale.isBanner800x800();
-        boolean etc = tmpBannerAndLocale.isEtc();
+        int bannerNumber = tmpBannerAndLocale.getCreativeNumber();
+        boolean banner1600x900 = tmpBannerAndLocale.getLandscapeData();
+        boolean banner900x1600 = tmpBannerAndLocale.getPortraitData();
+        boolean banner800x800 = tmpBannerAndLocale.getSquareData();
+        boolean etc = tmpBannerAndLocale.getEtcData();
         String locale = tmpBannerAndLocale.getLocale();
         String thumbnailLink = tmpBannerAndLocale.getThumbnailLink();
 
@@ -58,4 +58,9 @@ public class InMemoryBannerAndLocaleRepository {
     public boolean ifContainsCreativeAndLocale(String bannerAndLocale) {
         return bannerAndLocaleMap.containsKey(bannerAndLocale);
     }
+
+    public void clear() {
+        bannerAndLocaleMap.clear();
+    }
+
 }

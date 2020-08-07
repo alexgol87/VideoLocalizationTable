@@ -17,6 +17,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ClearValuesRequest;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import dao.InMemoryCreativeRepository;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -24,16 +25,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static util.GoogleDriveSpider.videoRepository;
+import static util.GoogleDriveSpider.videoErrors;
 
 public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String RANGE_UPDATE_LASTUPDATETIME = "video main!Q1:R1";
-    private static final String RANGE_UPDATE_LOCALIZATIONTABLE = "video main!A2:I";
-    private static final String RANGE_GET_LASTUPDATETIME = "Q1:Q1";
+    private static final String RANGE_UPDATE_VIDEO_LOCALIZATIONTABLE = "video main!A2:I";
+    private static final String RANGE_UPDATE_BANNER_LOCALIZATIONTABLE = "banners main!A2:I";
+    private static final String RANGE_VIDEO_LASTUPDATETIME = "video main!Q1:Q1";
+    private static final String RANGE_BANNER_LASTUPDATETIME = "banners main!Q1:Q1";
+    private static final String RANGE_UPDATE_VIDEOERRORS = "video main!V2:V200";
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -54,11 +56,8 @@ public class GoogleDriveApiUtil {
      */
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        //InputStream in = GoogleDriveSpider.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        if (CREDENTIALS == null) throw new NullPointerException("Credentials not found");
         InputStream in = new ByteArrayInputStream(CREDENTIALS.getBytes());
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-        }
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
@@ -113,6 +112,7 @@ public class GoogleDriveApiUtil {
                     .setPageSize(1000)
                     .setPageToken(pageToken)
                     .setFields(fields)
+                    .setOrderBy("modifiedTime")
                     .execute();
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,20 +120,23 @@ public class GoogleDriveApiUtil {
         return fileList;
     }
 
-    public static void clearAndPublishNewTableOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption) {
+    public static void clearAndPublishNewTableOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, InMemoryCreativeRepository repository, String creativeType) {
+        String rangeUpdate;
+        if (creativeType.equals("b")) rangeUpdate = RANGE_UPDATE_BANNER_LOCALIZATIONTABLE;
+        else rangeUpdate = RANGE_UPDATE_VIDEO_LOCALIZATIONTABLE;
         try {
             // clear old values
             ClearValuesRequest requestBodyClear = new ClearValuesRequest();
             Sheets.Spreadsheets.Values.Clear request =
-                    service.spreadsheets().values().clear(spreadsheetId, RANGE_UPDATE_LOCALIZATIONTABLE, requestBodyClear);
+                    service.spreadsheets().values().clear(spreadsheetId, rangeUpdate, requestBodyClear);
             request.execute();
 
             ValueRange requestBody = new ValueRange();
-            requestBody.setRange(RANGE_UPDATE_LOCALIZATIONTABLE);
+            requestBody.setRange(rangeUpdate);
             List<List<Object>> localizationValues = new ArrayList<>();
             AtomicInteger lineIndex = new AtomicInteger();
 
-            videoRepository.getAll()
+            repository.getAll()
                     .stream()
                     .forEach(v -> {
 
@@ -153,28 +156,65 @@ public class GoogleDriveApiUtil {
 
             requestBody.setValues(localizationValues);
 
-            service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_LOCALIZATIONTABLE, requestBody)
+            service.spreadsheets().values().update(spreadsheetId, rangeUpdate, requestBody)
                     .setValueInputOption(valueInputOption)
                     .execute();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void publishModifiedTime(Sheets service, String spreadsheetId, String valueInputOption) {
+    public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption) {
+        try {
+            // clear old values
+            ClearValuesRequest requestBodyClear = new ClearValuesRequest();
+            Sheets.Spreadsheets.Values.Clear request =
+                    service.spreadsheets().values().clear(spreadsheetId, RANGE_UPDATE_VIDEOERRORS, requestBodyClear);
+            request.execute();
+
+            ValueRange requestBody = new ValueRange();
+            requestBody.setRange(RANGE_UPDATE_VIDEOERRORS);
+            List<List<Object>> localizationValues = new ArrayList<>();
+            AtomicInteger lineIndex = new AtomicInteger();
+
+            videoErrors
+                    .stream()
+                    .forEach(v -> {
+
+                        localizationValues.add(new ArrayList<>());
+                        localizationValues.get(lineIndex.get()).add(v);
+                        lineIndex.getAndIncrement();
+
+                    });
+
+            requestBody.setValues(localizationValues);
+
+            service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_VIDEOERRORS, requestBody)
+                    .setValueInputOption(valueInputOption)
+                    .execute();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void publishModifiedTime(Sheets service, String spreadsheetId, String valueInputOption, String creativeType) {
+        String rangeUpdate;
+        if (creativeType.equals("b")) rangeUpdate = RANGE_BANNER_LASTUPDATETIME;
+        else rangeUpdate = RANGE_VIDEO_LASTUPDATETIME;
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+3"));
             String dateString = simpleDateFormat.format(new Date());
             ValueRange modifiedTimeRequestBody = new ValueRange();
-            modifiedTimeRequestBody.setRange(RANGE_UPDATE_LASTUPDATETIME);
+            modifiedTimeRequestBody.setRange(rangeUpdate);
             List<List<Object>> modifiedTimeValues = new ArrayList<>();
             modifiedTimeValues.add(new ArrayList<>());
             modifiedTimeValues.get(0).add(dateString);
-            modifiedTimeValues.get(0).add("Last update time");
             modifiedTimeRequestBody.setValues(modifiedTimeValues);
 
-            service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_LASTUPDATETIME, modifiedTimeRequestBody)
+            service.spreadsheets().values().update(spreadsheetId, rangeUpdate, modifiedTimeRequestBody)
                     .setValueInputOption(valueInputOption)
                     .execute();
 
@@ -183,11 +223,14 @@ public class GoogleDriveApiUtil {
         }
     }
 
-    public static String getModifiedTime(Sheets service, String spreadsheetId) {
+    public static String getModifiedTime(Sheets service, String spreadsheetId, String creativeType) {
         ValueRange response = null;
+        String rangeUpdate;
+        if (creativeType.equals("b")) rangeUpdate = RANGE_BANNER_LASTUPDATETIME;
+        else rangeUpdate = RANGE_VIDEO_LASTUPDATETIME;
         try {
-            Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, RANGE_GET_LASTUPDATETIME);
-             response = request.execute();
+            Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, rangeUpdate);
+            response = request.execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

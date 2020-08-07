@@ -2,10 +2,23 @@ package model;
 
 public interface CreativeAndLocale {
 
-    public boolean isAll();
+    boolean getAllData();
 
-    public String getLocale();
+    String getLocale();
 
-    public String getThumbnailLink();
+    String getThumbnailLink();
+    
+    int getCreativeNumber();
 
+    boolean getDspData();
+
+    boolean getFbfData();
+
+    boolean getSquareData();
+
+    boolean getLandscapeData();
+
+    boolean getPortraitData();
+
+    boolean getEtcData();
 }
