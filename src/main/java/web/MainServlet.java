@@ -23,15 +23,10 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
             //if (thread.getState() == Thread.State.TERMINATED)
-                if (req.getParameter("creativeType").equals("video")) thread = new Thread(taskVideo);
-                else thread = new Thread(taskBanner);
-            if (req.getParameter("updatePreview") != null) {
-                if (req.getParameter("creativeType").equals("video")) DropboxApiUtil.startUpdateVideoPreview();
-                else DropboxApiUtil.startUpdateBannerPreview();
-            } else {
-                DropboxApiUtil.stopUpdateVideoPreview();
-                DropboxApiUtil.stopUpdateBannerPreview();
-            }
+            if (req.getParameter("creativeType").equals("video")) thread = new Thread(taskVideo);
+            else thread = new Thread(taskBanner);
+            if (req.getParameter("updatePreview") != null) DropboxApiUtil.startUpdatePreview();
+            else DropboxApiUtil.stopUpdatePreview();
             thread.start();
             req.setAttribute("lockUpdate", TRUE);
             req.setAttribute("tableReady", FALSE);
@@ -49,7 +44,10 @@ public class MainServlet extends HttpServlet {
         }
         req.setAttribute("lastUpdateTimeVideo", lastUpdateTimeVideo);
         req.setAttribute("lastUpdateTimeBanner", lastUpdateTimeBanner);
-        req.getRequestDispatcher("main.jsp").forward(req, resp);
+        req.getRequestDispatcher("main.jsp").
+
+                forward(req, resp);
+
     }
 
     @Override

@@ -24,8 +24,7 @@ public class DropboxApiUtil {
     private static final String DIRECTORY_FOR_PREVIEW = "tmp/";
     private static final String DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW = "/VideoPreviewFolder";
     private static final String DROPBOX_DIRECTORY_FOR_BANNER_PREVIEW = "/BannerPreviewFolder";
-    private static boolean updateVideoPreview = false;
-    private static boolean updateBannerPreview = false;
+    private static boolean updatePreview = false;
 
     public DropboxApiUtil() {
         //InputStream inputStream = getClass().getClassLoader().getResourceAsStream("dropbox.key");
@@ -34,30 +33,24 @@ public class DropboxApiUtil {
         this.client = new DbxClientV2(config, ACCESS_TOKEN);
     }
 
-    void createDropboxPreviewFolder(String directory, String creativeType) {
+    void createDropboxPreviewFolder(String directory) {
         try {
-            if (creativeType.equals("b") && updateBannerPreview) client.files().delete(directory);
-            else if (updateVideoPreview) client.files().delete(directory);
+            if (updatePreview) {
+                client.files().delete(directory);
+                stopUpdatePreview();
+            }
             client.files().createFolder(directory);
         } catch (DbxException e) {
             e.printStackTrace();
         }
     }
 
-    public static void startUpdateVideoPreview() {
-        updateVideoPreview = true;
+    public static void startUpdatePreview() {
+        updatePreview = true;
     }
 
-    public static void stopUpdateVideoPreview() {
-        updateVideoPreview = false;
-    }
-
-    public static void startUpdateBannerPreview() {
-        updateBannerPreview = true;
-    }
-
-    public static void stopUpdateBannerPreview() {
-        updateBannerPreview = false;
+    public static void stopUpdatePreview() {
+        updatePreview = false;
     }
 
     // Get all Dropbox uploaded files and links
@@ -66,7 +59,7 @@ public class DropboxApiUtil {
         try {
             if (creativeType.equals("b")) directory = DROPBOX_DIRECTORY_FOR_BANNER_PREVIEW;
             else directory = DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW;
-            createDropboxPreviewFolder(directory, creativeType);
+            createDropboxPreviewFolder(directory);
             ListFolderResult result = client.files().listFolder(directory);
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
