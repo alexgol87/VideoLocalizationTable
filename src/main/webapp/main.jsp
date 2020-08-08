@@ -35,8 +35,10 @@
     <c:if test="${requestScope.lockUpdate == 'true'}">Please, wait until the update is finished
     </c:if>
     <c:if test="${requestScope.tableReady == 'true'}">
-    The table is updated, please, check. Execution time: ${requestScope.execTime}.
-
+    The table is updated, please, check.
+    <c:if test="${requestScope.execTime.length() > 0}">
+        Execution time: ${requestScope.execTime}.
+    </c:if>
     <c:if test="${requestScope.videoErrors > 0}">&nbsp;<a rel="noopener noreferrer"
         href="https://docs.google.com/spreadsheets/d/1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI/edit?pli=1#gid=1369950641&range=V1"
         class="awemlink" target="_blank">${requestScope.videoErrors} errors found.
