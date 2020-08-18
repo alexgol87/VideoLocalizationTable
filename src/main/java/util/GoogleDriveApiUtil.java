@@ -31,11 +31,11 @@ public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String RANGE_UPDATE_VIDEO_LOCALIZATIONTABLE = "video main!A2:I";
-    private static final String RANGE_UPDATE_BANNER_LOCALIZATIONTABLE = "banners main!A2:I";
-    private static final String RANGE_VIDEO_LASTUPDATETIME = "video main!Q1:Q1";
-    private static final String RANGE_BANNER_LASTUPDATETIME = "banners main!Q1:Q1";
-    private static final String RANGE_UPDATE_VIDEOERRORS = "video main!V2:V200";
+    private static final String RANGE_UPDATE_VIDEO_LOCALIZATIONTABLE = "video COEm!A2:I";
+    private static final String RANGE_UPDATE_BANNER_LOCALIZATIONTABLE = "banners COEm!A2:I";
+    private static final String RANGE_VIDEO_LASTUPDATETIME = "video COEm!Q1:Q1";
+    private static final String RANGE_BANNER_LASTUPDATETIME = "banners COEm!Q1:Q1";
+    private static final String RANGE_UPDATE_VIDEOERRORS = "video COEm!V2:V200";
 
     /**
      * Global instance of the scopes required by this quickstart.
