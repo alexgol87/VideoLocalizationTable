@@ -22,8 +22,6 @@ public class DropboxApiUtil {
     private static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/AwemVideoCreativesPreview").build();
     private DbxClientV2 client;
     private static final String DIRECTORY_FOR_PREVIEW = "tmp/";
-    private static final String DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW = "/VideoPreviewFolder";
-    private static final String DROPBOX_DIRECTORY_FOR_BANNER_PREVIEW = "/BannerPreviewFolder";
     private static boolean updatePreview = false;
 
     public DropboxApiUtil() {
@@ -54,13 +52,10 @@ public class DropboxApiUtil {
     }
 
     // Get all Dropbox uploaded files and links
-    void getDropboxFilesAndLinks(InMemoryCreativeRepository repository, String creativeType) {
-        String directory;
+    void getDropboxFilesAndLinks(InMemoryCreativeRepository repository, String previewDirectory) {
         try {
-            if (creativeType.equals("b")) directory = DROPBOX_DIRECTORY_FOR_BANNER_PREVIEW;
-            else directory = DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW;
-            createDropboxPreviewFolder(directory);
-            ListFolderResult result = client.files().listFolder(directory);
+            createDropboxPreviewFolder(previewDirectory);
+            ListFolderResult result = client.files().listFolder(previewDirectory);
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
                     int creativeNumber = parseIntSafely(metadata.getName().replace(".jpg", ""));
@@ -87,10 +82,7 @@ public class DropboxApiUtil {
         }
     }
 
-    void newPreviewUploadingToDropbox(InMemoryCreativeRepository repository, String creativeType) {
-        String directory;
-        if (creativeType.equals("b")) directory = DROPBOX_DIRECTORY_FOR_BANNER_PREVIEW;
-        else directory = DROPBOX_DIRECTORY_FOR_VIDEO_PREVIEW;
+    void newPreviewUploadingToDropbox(InMemoryCreativeRepository repository, String previewDirectory) {
         //create tmp folder
         File previewFolder = new File(DIRECTORY_FOR_PREVIEW);
         previewFolder.mkdir();
@@ -104,7 +96,7 @@ public class DropboxApiUtil {
                             InputStream in = new URL(v.getThumbnailLink()).openStream();
                             Files.copy(in, Paths.get(DIRECTORY_FOR_PREVIEW + v.getCreativeNumber() + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
                             InputStream in2 = new FileInputStream(String.valueOf(Paths.get(DIRECTORY_FOR_PREVIEW + v.getCreativeNumber() + ".jpg")));
-                            client.files().uploadBuilder(directory + "/" + v.getCreativeNumber() + ".jpg").uploadAndFinish(in2);
+                            client.files().uploadBuilder(previewDirectory + "/" + v.getCreativeNumber() + ".jpg").uploadAndFinish(in2);
                             in.close();
                             in2.close();
                         } catch (IOException | DbxException ex) {

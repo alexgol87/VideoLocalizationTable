@@ -29,15 +29,14 @@ public class GoogleDriveBannerSpider implements Runnable {
         GeneralUtil.bannerRepositoryFilling(bannerRepository);
 
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
-        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "b");
+        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "/CE/BannerPreviewFolder");
+        dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, "/CE/BannerPreviewFolder");
+        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "/CE/BannerPreviewFolder");
 
-        dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, "b");
-        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "b");
-
-        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b");
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b", "1w_aLc_CIy3RBRycNoG5QcbHnK6ORsowy");
 
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "b");
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "banners COEm!A2:I");
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "b");
 
         GeneralUtil.execTime = endTimeFixing(start);

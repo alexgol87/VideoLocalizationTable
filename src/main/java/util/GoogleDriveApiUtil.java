@@ -31,11 +31,6 @@ public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String RANGE_UPDATE_VIDEO_LOCALIZATIONTABLE = "video COEm!A2:I";
-    private static final String RANGE_UPDATE_BANNER_LOCALIZATIONTABLE = "banners COEm!A2:I";
-    private static final String RANGE_VIDEO_LASTUPDATETIME = "video COEm!Q1:Q1";
-    private static final String RANGE_BANNER_LASTUPDATETIME = "banners COEm!Q1:Q1";
-    private static final String RANGE_UPDATE_VIDEOERRORS = "video COEm!V2:V200";
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -120,10 +115,7 @@ public class GoogleDriveApiUtil {
         return fileList;
     }
 
-    public static void clearAndPublishNewTableOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, InMemoryCreativeRepository repository, String creativeType) {
-        String rangeUpdate;
-        if (creativeType.equals("b")) rangeUpdate = RANGE_UPDATE_BANNER_LOCALIZATIONTABLE;
-        else rangeUpdate = RANGE_UPDATE_VIDEO_LOCALIZATIONTABLE;
+    public static void clearAndPublishNewTableOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, InMemoryCreativeRepository repository, String rangeUpdate) {
         try {
             // clear old values
             ClearValuesRequest requestBodyClear = new ClearValuesRequest();
@@ -165,16 +157,16 @@ public class GoogleDriveApiUtil {
         }
     }
 
-    public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption) {
+    public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, String rangeUpdate) {
         try {
             // clear old values
             ClearValuesRequest requestBodyClear = new ClearValuesRequest();
             Sheets.Spreadsheets.Values.Clear request =
-                    service.spreadsheets().values().clear(spreadsheetId, RANGE_UPDATE_VIDEOERRORS, requestBodyClear);
+                    service.spreadsheets().values().clear(spreadsheetId, rangeUpdate, requestBodyClear);
             request.execute();
 
             ValueRange requestBody = new ValueRange();
-            requestBody.setRange(RANGE_UPDATE_VIDEOERRORS);
+            requestBody.setRange(rangeUpdate);
             List<List<Object>> localizationValues = new ArrayList<>();
             AtomicInteger lineIndex = new AtomicInteger();
 
@@ -190,7 +182,7 @@ public class GoogleDriveApiUtil {
 
             requestBody.setValues(localizationValues);
 
-            service.spreadsheets().values().update(spreadsheetId, RANGE_UPDATE_VIDEOERRORS, requestBody)
+            service.spreadsheets().values().update(spreadsheetId, rangeUpdate, requestBody)
                     .setValueInputOption(valueInputOption)
                     .execute();
 
@@ -199,10 +191,7 @@ public class GoogleDriveApiUtil {
         }
     }
 
-    public static void publishModifiedTime(Sheets service, String spreadsheetId, String valueInputOption, String creativeType) {
-        String rangeUpdate;
-        if (creativeType.equals("b")) rangeUpdate = RANGE_BANNER_LASTUPDATETIME;
-        else rangeUpdate = RANGE_VIDEO_LASTUPDATETIME;
+    public static void publishModifiedTime(Sheets service, String spreadsheetId, String valueInputOption, String rangeUpdate) {
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+3"));
@@ -223,11 +212,8 @@ public class GoogleDriveApiUtil {
         }
     }
 
-    public static String getModifiedTime(Sheets service, String spreadsheetId, String creativeType) {
+    public static String getModifiedTime(Sheets service, String spreadsheetId, String rangeUpdate) {
         ValueRange response = null;
-        String rangeUpdate;
-        if (creativeType.equals("b")) rangeUpdate = RANGE_BANNER_LASTUPDATETIME;
-        else rangeUpdate = RANGE_VIDEO_LASTUPDATETIME;
         try {
             Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(spreadsheetId, rangeUpdate);
             response = request.execute();

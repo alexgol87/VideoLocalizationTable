@@ -39,23 +39,31 @@ public class GeneralUtil {
                 });
     }
 
-    public static void videoAndLocaleRepositoryFilling(Drive service, String query) {
+    public static void videoAndLocaleRepositoryFilling(Drive service, String query, String project) {
         String pageToken = null;
         while (true) {
-            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "mimeType = 'video/mp4' and trashed = false", "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser, parents, size)");
+            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser, parents, size)");
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
             } else {
                 for (File file : files) {
-                    if (file.getName().toLowerCase().contains("_v") && file.getName().toLowerCase().contains("s") && (file.getName().split("_").length == 5 || file.getName().split("_").length == 6) && file.getName().toLowerCase().split("_")[1].matches("v\\d+") && file.getName().split("_")[2].length() >= 2 && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)") && parseIntSafely(file.getName().toLowerCase().split("_")[1].replace("v", "")) > 100) {
-                        String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
-                        int videoNumber = parseIntSafely(fileNameParsedArray[1].replace("v", ""));
-                        if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[2]))
-                            GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[2]);
-                        GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[2], fileNameParsedArray[0], file.getThumbnailLink());
-                        checkNameAndSizeOfCreative(file, fileNameParsedArray);
-                    }
+                    if (file.getName().toLowerCase().contains("_v") && file.getName().toLowerCase().contains("s") && (file.getName().split("_").length == 5 || file.getName().split("_").length == 6 || file.getName().split("_").length == 7) && (file.getName().toLowerCase().split("_")[1].matches("v\\d+") || file.getName().toLowerCase().split("_")[2].matches("v\\d+")) && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)"))
+                        if (project.equals("ce") && parseIntSafely(file.getName().toLowerCase().split("_")[1].replace("v", "")) > 100) {
+                            String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
+                            int videoNumber = parseIntSafely(fileNameParsedArray[1].replace("v", ""));
+                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[2]))
+                                GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[2]);
+                            GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[2], fileNameParsedArray[0], file.getThumbnailLink());
+                            checkNameAndSizeOfCreative(file, fileNameParsedArray);
+                        } else if (project.equals("cm")) {
+                            String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
+                            int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
+                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[3]))
+                                GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[3]);
+                            GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[3], fileNameParsedArray[1], file.getThumbnailLink());
+                            checkNameAndSizeOfCreative(file, fileNameParsedArray);
+                        }
                 }
                 pageToken = result.getNextPageToken();
                 if (pageToken == null) break;
@@ -94,10 +102,7 @@ public class GeneralUtil {
 
     }
 
-    public static void getFolderLinksFromGoogleDrive(Drive service, InMemoryCreativeRepository repository, String creativeType) {
-        String directory;
-        if (creativeType.equals("b")) directory = "1w_aLc_CIy3RBRycNoG5QcbHnK6ORsowy";
-        else directory = "1RginzgJMxnxyc9BOHZcqsJaEBrg4Dwv6";
+    public static void getFolderLinksFromGoogleDrive(Drive service, InMemoryCreativeRepository repository, String creativeType, String directory) {
         String pageToken = null;
         while (true) {
             FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "'" + directory + "' in parents and mimeType='application/vnd.google-apps.folder' and trashed = false", "nextPageToken, files(name, webViewLink)");

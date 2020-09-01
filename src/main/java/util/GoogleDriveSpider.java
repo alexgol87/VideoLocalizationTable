@@ -16,36 +16,58 @@ public class GoogleDriveSpider implements Runnable {
     static final InMemoryVideoAndLocaleRepository videoAndLocaleRepository = new InMemoryVideoAndLocaleRepository();
     static final InMemoryCreativeRepository videoRepository = new InMemoryCreativeRepository();
 
-    public static Set<String> videoErrors = new LinkedHashSet<>();
-    public static Map<String, String> folderDictionary = new HashMap<>();
+    public static final Set<String> videoErrors = new LinkedHashSet<>();
+    public static final Map<String, String> folderDictionary = new HashMap<>();
 
     public GoogleDriveSpider() {
 
-        videoRepository.clear();
-        videoAndLocaleRepository.clear();
-        folderDictionary.clear();
-
         Instant start = GeneralUtil.startTimeFixing();
 
-        Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
-        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive);
-        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "mimeType = 'video/mp4' and trashed = false");
-        GeneralUtil.videoRepositoryFilling(videoRepository);
-        // 19s
-
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
-        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "v");
-        // 100s
-        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "v");
-        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "v");
-
-        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v");
-
+        Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "v");
-        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED");
 
-        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "v");
+        folderDictionary.clear();
+        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive);
+
+        //CE
+        videoErrors.clear();
+        videoRepository.clear();
+        videoAndLocaleRepository.clear();
+
+        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "mimeType = 'video/mp4' and trashed = false", "ce");
+        GeneralUtil.videoRepositoryFilling(videoRepository);
+
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CE/VideoPreviewFolder");
+        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "/CE/VideoPreviewFolder");
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CE/VideoPreviewFolder");
+
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v", "1RginzgJMxnxyc9BOHZcqsJaEBrg4Dwv6");
+
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COEm!A2:I");
+        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!V2:V200");
+
+        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!Q1:Q1");
+
+        // CM
+        videoErrors.clear();
+        videoRepository.clear();
+        videoAndLocaleRepository.clear();
+
+        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "name contains 'cm_' and mimeType = 'video/mp4' and trashed = false", "cm");
+        GeneralUtil.videoRepositoryFilling(videoRepository);
+
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CM/VideoPreviewFolder");
+        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "/CM/VideoPreviewFolder");
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CM/VideoPreviewFolder");
+
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v", "1CXP7zG49GsMimpWKVbzzzyHzkZEhZGYf");
+
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COM!A2:I");
+        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!V2:V200");
+
+        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!Q1:Q1");
+
 
         GeneralUtil.execTime = GeneralUtil.endTimeFixing(start);
     }

@@ -36,8 +36,8 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("execTime", GeneralUtil.execTime);
             req.setAttribute("videoErrors", GoogleDriveSpider.videoErrors.size());
             GoogleDriveSpider.videoErrors.clear();
-            lastUpdateTimeVideo = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "v");
-            lastUpdateTimeBanner = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "b");
+            lastUpdateTimeVideo = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "video COEm!Q1:Q1");
+            lastUpdateTimeBanner = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "banners COEm!Q1:Q1");
         } else if ((thread.getState() == Thread.State.RUNNABLE)) {
             req.setAttribute("lockUpdate", TRUE);
             req.setAttribute("tableReady", FALSE);
@@ -59,8 +59,8 @@ public class MainServlet extends HttpServlet {
         } else {
             req.setAttribute("lockUpdate", FALSE);
         }
-        lastUpdateTimeVideo = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "v");
-        lastUpdateTimeBanner = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "b");
+        lastUpdateTimeVideo = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "video COEm!Q1:Q1");
+        lastUpdateTimeBanner = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "banners COEm!Q1:Q1");
         req.setAttribute("lastUpdateTimeVideo", lastUpdateTimeVideo);
         req.setAttribute("lastUpdateTimeBanner", lastUpdateTimeBanner);
         //TODO Google authorization https://coderoad.ru/15938514/Java-%D0%B8-Google-Spreadsheets-API-%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-OAuth-2-0
