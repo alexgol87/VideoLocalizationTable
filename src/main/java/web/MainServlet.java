@@ -34,8 +34,10 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("lockUpdate", FALSE);
             req.setAttribute("tableReady", TRUE);
             req.setAttribute("execTime", GeneralUtil.execTime);
-            req.setAttribute("videoErrors", GoogleDriveSpider.videoErrors.size());
-            GoogleDriveSpider.videoErrors.clear();
+            req.setAttribute("videoErrorsCE", GoogleDriveSpider.videoErrorsCE.size());
+            req.setAttribute("videoErrorsCM", GoogleDriveSpider.videoErrorsCM.size());
+            //GoogleDriveSpider.videoErrorsCE.clear();
+            //GoogleDriveSpider.videoErrorsCM.clear();
             lastUpdateTimeVideo = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "video COEm!Q1:Q1");
             lastUpdateTimeBanner = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "banners COEm!Q1:Q1");
         } else if ((thread.getState() == Thread.State.RUNNABLE)) {

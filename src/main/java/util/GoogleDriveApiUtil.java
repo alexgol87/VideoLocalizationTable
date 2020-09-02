@@ -25,8 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static util.GoogleDriveSpider.videoErrors;
-
 public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
@@ -157,7 +155,7 @@ public class GoogleDriveApiUtil {
         }
     }
 
-    public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, String rangeUpdate) {
+    public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, String rangeUpdate, Set<String> videoErrors) {
         try {
             // clear old values
             ClearValuesRequest requestBodyClear = new ClearValuesRequest();
