@@ -39,7 +39,7 @@
     <c:if test="${requestScope.execTime.length() > 0}">
         Execution time: ${requestScope.execTime}.
     </c:if>
-    <c:if test="${requestScope.videoErrorsCE > 0}">&nbsp;CE: <a rel="noopener noreferrer"
+    <c:if test="${requestScope.videoErrorsCE > 0}">&nbsp;<br />CE: <a rel="noopener noreferrer"
         href="https://docs.google.com/spreadsheets/d/1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI/edit?pli=1#gid=1369950641&range=V1"
         class="awemlink" target="_blank">${requestScope.videoErrorsCE} errors found.
         </a>
