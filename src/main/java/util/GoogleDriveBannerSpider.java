@@ -37,7 +37,7 @@ public class GoogleDriveBannerSpider implements Runnable {
 
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
         GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "banners COEm!A2:I");
-        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "b");
+        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "banners COEm!Q1:Q1");
 
         GeneralUtil.execTime = endTimeFixing(start);
     }
