@@ -51,20 +51,20 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    if (filename.contains("_v") && filename.contains("s") && (fileNameParsedArray.length == 6 || fileNameParsedArray.length == 7 || fileNameParsedArray.length == 8) && fileNameParsedArray[2].matches("v\\d+") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)"))
-                        if (project.equals("ce") && parseIntSafely(fileNameParsedArray[2].replace("v", "")) > 100) {
-                            int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
-                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[2]))
+                    if (filename.contains("_v") && filename.contains("s") && (fileNameParsedArray.length == 6 || fileNameParsedArray.length == 7 || fileNameParsedArray.length == 8) && fileNameParsedArray[2].matches("v\\d+") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)")) {
+                        int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
+                        if (project.equals("ce") && videoNumber > 100) {
+                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[3]))
                                 GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[3]);
                             GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[3], fileNameParsedArray[1], file.getThumbnailLink());
                             checkNameAndSizeOfCreative(file, fileNameParsedArray, videoErrors);
                         } else if (project.equals("cm")) {
-                            int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
                             if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[3]))
                                 GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[3]);
                             GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[3], fileNameParsedArray[1], file.getThumbnailLink());
                             checkNameAndSizeOfCreative(file, fileNameParsedArray, videoErrors);
                         }
+                    }
                 }
                 pageToken = result.getNextPageToken();
                 if (pageToken == null) break;
@@ -134,9 +134,9 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    if (filename.contains("_b") && (fileNameParsedArray.length == 4 || fileNameParsedArray.length == 5) && fileNameParsedArray[1].matches("b\\d+") && fileNameParsedArray[2].length() >= 2 && parseIntSafely(fileNameParsedArray[1].replace("b", "")) > 0) {
+                    int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
+                    if (filename.contains("_b") && (fileNameParsedArray.length == 4 || fileNameParsedArray.length == 5) && fileNameParsedArray[1].matches("b\\d+") && fileNameParsedArray[2].length() >= 2 && bannerNumber > 0) {
                         //System.out.println(file.getName().toLowerCase());
-                        int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
                         if (!GoogleDriveBannerSpider.bannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + fileNameParsedArray[2]))
                             GoogleDriveBannerSpider.bannerAndLocaleRepository.add(bannerNumber, fileNameParsedArray[2]);
                         GoogleDriveBannerSpider.bannerAndLocaleRepository.update(bannerNumber + "_" + fileNameParsedArray[2], fileNameParsedArray[0], file.getThumbnailLink());
