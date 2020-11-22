@@ -8,7 +8,7 @@ import dao.InMemoryCreativeRepository;
 import java.time.Instant;
 
 import static util.GeneralUtil.endTimeFixing;
-import static util.GeneralUtil.startTimeFixing;
+import static util.GeneralUtil.now;
 
 public class GoogleDriveBannerSpider implements Runnable {
 
@@ -21,7 +21,7 @@ public class GoogleDriveBannerSpider implements Runnable {
         bannerRepository.clear();
         bannerAndLocaleRepository.clear();
 
-        Instant start = startTimeFixing();
+        Instant start = now();
 
         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
 
