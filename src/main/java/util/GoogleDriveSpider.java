@@ -22,7 +22,7 @@ public class GoogleDriveSpider implements Runnable {
 
     public GoogleDriveSpider() {
 
-        Instant start = GeneralUtil.startTimeFixing();
+        Instant start = GeneralUtil.now();
 
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
         Drive serviceDrive = GoogleDriveApiUtil.buildDriveApiClientService();
