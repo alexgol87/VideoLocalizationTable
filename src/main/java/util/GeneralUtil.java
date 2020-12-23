@@ -11,6 +11,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GeneralUtil {
 
@@ -51,17 +53,34 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    if (filename.contains("_v") && filename.contains("s") && (fileNameParsedArray.length == 6 || fileNameParsedArray.length == 7 || fileNameParsedArray.length == 8) && fileNameParsedArray[2].matches("v\\d+") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)")) {
-                        int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
-                        if (project.equals("ce") && videoNumber > 100) {
-                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[3]))
-                                GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[3]);
-                            GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[3], fileNameParsedArray[1], file.getThumbnailLink());
-                            checkNameAndSizeOfCreative(file, fileNameParsedArray, videoErrors);
-                        } else if (project.equals("cm")) {
-                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + fileNameParsedArray[3]))
-                                GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, fileNameParsedArray[3]);
-                            GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + fileNameParsedArray[3], fileNameParsedArray[1], file.getThumbnailLink());
+                    if (filename.matches("(.*)_\\d+s(.*)") && filename.matches("(.*)_v\\d+_(.*)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)")) {
+                        String regexVideoNumber = "_v\\d+";
+                        int videoNumber = 0;
+                        Pattern pattern = Pattern.compile(regexVideoNumber);
+                        Matcher matcher = pattern.matcher(filename);
+                        while (matcher.find()) {
+                            videoNumber = parseIntSafely(matcher.group(0).replace("_v", ""));
+                        }
+                        String regexLocale = "v\\d+_[a-z]{2,3}";
+                        String videoLocale = "";
+                        pattern = Pattern.compile(regexLocale);
+                        matcher = pattern.matcher(filename);
+                        while (matcher.find()) {
+                            videoLocale = matcher.group(0).split("_")[1];
+                        }
+                        String regexVideoSize = "\\d+x\\d+";
+                        String videoSize = "";
+                        pattern = Pattern.compile(regexVideoSize);
+                        matcher = pattern.matcher(filename.replace("х", "x"));
+                        System.out.println(filename);
+                        while (matcher.find()) {
+                            videoSize = matcher.group(0);
+                        }
+                        //int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
+                        if (((project.equals("ce") && videoNumber > 100) || project.equals("cm"))) {
+                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + videoLocale))
+                                GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, videoLocale);
+                            GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + videoLocale, fileNameParsedArray[1], file.getThumbnailLink());
                             checkNameAndSizeOfCreative(file, fileNameParsedArray, videoErrors);
                         }
                     }
@@ -76,27 +95,38 @@ public class GeneralUtil {
         try {
             int videoWidth = file.getVideoMediaMetadata().getWidth();
             int videoHeight = file.getVideoMediaMetadata().getHeight();
-            if (videoWidth != Integer.parseInt(fileNameParsedArray[1].split("x")[0]) || videoHeight != Integer.parseInt(fileNameParsedArray[1].split("x")[1])) {
-                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight(), file.getLastModifyingUser().getDisplayName());
+            if (fileNameParsedArray[1].matches("(.*)\\d+x\\d+(.*)"))
+                if (videoWidth != Integer.parseInt(fileNameParsedArray[1].replace("х", "x").split("x")[0]) || videoHeight != Integer.parseInt(fileNameParsedArray[1].replace("х", "x").split("x")[1])) {
+                    String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight(), file.getLastModifyingUser().getDisplayName());
+                    //System.out.println(error);
+                    videoErrors.add(error);
+                }
+            if (!fileNameParsedArray[0].equals("ce") && !fileNameParsedArray[0].equals("cm")) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong name: NO PROJECT PREFIX. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 videoErrors.add(error);
             }
             if (file.getName().contains("mp4.mp4")) {
-                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s has wrong name. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong name. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                //System.out.println(error);
+                videoErrors.add(error);
+            }
+            if (file.getName().contains("m4v")) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong extension M4V. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 videoErrors.add(error);
             }
             if (file.getSize() > 41943040 && parseIntSafely(fileNameParsedArray[2].replace("v", "")) > 600) {
-                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s exceeds size of 40 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s exceeds size of 40 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 videoErrors.add(error);
             }
         } catch (NullPointerException e) {
-            String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s is corrupted. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+            String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s is corrupted. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
             //System.out.println(error);
             videoErrors.add(error);
         } catch (NumberFormatException e) {
-            String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"File %s contains the Russian letter 'x'. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+            String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s contains the Russian letter 'x'. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
             //System.out.println(error);
             videoErrors.add(error);
         }

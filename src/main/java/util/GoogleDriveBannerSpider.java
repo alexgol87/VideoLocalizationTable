@@ -15,6 +15,8 @@ public class GoogleDriveBannerSpider implements Runnable {
 
     static final InMemoryBannerAndLocaleRepository bannerAndLocaleRepository = new InMemoryBannerAndLocaleRepository();
     static final InMemoryCreativeRepository bannerRepository = new InMemoryCreativeRepository();
+    static final String DropboxBannerPreviewFolderCE = "/CE/BannerPreviewFolder";
+    static final String DropboxBannerPreviewFolderCM = "/CM/BannerPreviewFolder";
 
     public GoogleDriveBannerSpider() {
 
@@ -29,9 +31,9 @@ public class GoogleDriveBannerSpider implements Runnable {
         GeneralUtil.bannerRepositoryFilling(bannerRepository);
 
         DropboxApiUtil dropboxApiUtil = new DropboxApiUtil();
-        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "/CE/BannerPreviewFolder");
-        dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, "/CE/BannerPreviewFolder");
-        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, "/CE/BannerPreviewFolder");
+        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, DropboxBannerPreviewFolderCE);
+        dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, DropboxBannerPreviewFolderCE);
+        dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, DropboxBannerPreviewFolderCE);
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b", "1w_aLc_CIy3RBRycNoG5QcbHnK6ORsowy");
 

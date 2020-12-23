@@ -14,20 +14,6 @@ public class VideoAndLocale implements CreativeAndLocale {
     private final String locale;
     private final String thumbnailLink;
 
-    public VideoAndLocale() {
-        this.videoNumber = null;
-        this.video1920x1080 = false;
-        this.video1080x1920 = false;
-        this.video1080x1080 = false;
-        this.video1080x1350 = false;
-        this.video960x640 = false;
-        this.video640x960 = false;
-        this.video1024x768 = false;
-        this.video768x1024 = false;
-        this.locale = null;
-        this.thumbnailLink = null;
-    }
-
     public int getCreativeNumber() {
         return videoNumber;
     }

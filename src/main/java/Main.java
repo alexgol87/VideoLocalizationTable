@@ -3,8 +3,10 @@ import util.GoogleDriveBannerSpider;
 import util.GoogleDriveSpider;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 import static util.GeneralUtil.*;
+import static util.GoogleDriveSpider.videoErrorsCE;
 
 public class Main {
 
@@ -18,5 +20,8 @@ public class Main {
         thread.start();
         thread.join();
         System.out.println(endTimeFixing(start));
+        for (String s : videoErrorsCE) {
+            System.out.println(s);
+        }
     }
 }

@@ -15,6 +15,8 @@ public class GoogleDriveSpider implements Runnable {
 
     static final InMemoryVideoAndLocaleRepository videoAndLocaleRepository = new InMemoryVideoAndLocaleRepository();
     static final InMemoryCreativeRepository videoRepository = new InMemoryCreativeRepository();
+    static final String DropboxVideoPreviewFolderCE = "/CE/VideoPreviewFolder";
+    static final String DropboxVideoPreviewFolderCM = "/CM/VideoPreviewFolder";
 
     public static final Set<String> videoErrorsCE = new LinkedHashSet<>();
     public static final Set<String> videoErrorsCM = new LinkedHashSet<>();
@@ -39,13 +41,13 @@ public class GoogleDriveSpider implements Runnable {
         GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "mimeType = 'video/mp4' and trashed = false", "ce", videoErrorsCE);
         GeneralUtil.videoRepositoryFilling(videoRepository);
 
-        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CE/VideoPreviewFolder");
-        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "/CE/VideoPreviewFolder");
-        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CE/VideoPreviewFolder");
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, DropboxVideoPreviewFolderCE);
+        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, DropboxVideoPreviewFolderCE);
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, DropboxVideoPreviewFolderCE);
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v", "1RginzgJMxnxyc9BOHZcqsJaEBrg4Dwv6");
 
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COEm!A2:I");
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COEm!A2:K");
         GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!V2:V200", videoErrorsCE);
 
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!Q1:Q1");
@@ -58,13 +60,13 @@ public class GoogleDriveSpider implements Runnable {
         GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "name contains 'cm_' and mimeType = 'video/mp4' and trashed = false", "cm", videoErrorsCM);
         GeneralUtil.videoRepositoryFilling(videoRepository);
 
-        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CM/VideoPreviewFolder");
-        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, "/CM/VideoPreviewFolder");
-        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, "/CM/VideoPreviewFolder");
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, DropboxVideoPreviewFolderCM);
+        dropboxApiUtil.newPreviewUploadingToDropbox(videoRepository, DropboxVideoPreviewFolderCM);
+        dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, DropboxVideoPreviewFolderCM);
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v", "1CXP7zG49GsMimpWKVbzzzyHzkZEhZGYf");
 
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COM!A2:I");
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COM!A2:K");
         GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!V2:V200", videoErrorsCM);
 
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!Q1:Q1");

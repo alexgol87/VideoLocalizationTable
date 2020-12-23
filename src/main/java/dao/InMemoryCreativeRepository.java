@@ -12,7 +12,7 @@ public class InMemoryCreativeRepository {
     static Map<Integer, Creative> creativeTreeMap = new TreeMap<>();
 
     public void add(Integer creativeNumber) {
-        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, "", "", "", "", "", "", "", ""));
+        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, "", "", "", "", "", "", "", "", "", ""));
     }
 
     public void update(Integer creativeNumber, String locale, boolean isAllData, boolean isSquareData, boolean isLandscapeData, boolean isPortraitData, boolean isDspData, boolean isFbfData, boolean isEtcData, String thumbnailLink) {
@@ -23,6 +23,8 @@ public class InMemoryCreativeRepository {
         String jaData = tmpCreative.getJaData();
         String mxData = tmpCreative.getMxData();
         String zhsData = tmpCreative.getZhsData();
+        String koData = tmpCreative.getKoData();
+        String brData = tmpCreative.getBrData();
         if (thumbnailLink == null) thumbnailLink = tmpCreative.getThumbnailLink();
         String folderLink = tmpCreative.getFolderLink();
         final String ALL = "ALL";
@@ -100,10 +102,32 @@ public class InMemoryCreativeRepository {
                     if (isEtcData) zhsData += ETC;
                 }
                 break;
+            case "ko":
+                if (isAllData) koData = ALL;
+                else {
+                    if (isLandscapeData) koData += HOR;
+                    if (isPortraitData) koData += VER;
+                    if (isSquareData) koData += SQR;
+                    if (isFbfData) koData += FBF;
+                    if (isDspData) koData += DSP;
+                    if (isEtcData) koData += ETC;
+                }
+                break;
+            case "br":
+                if (isAllData) brData = ALL;
+                else {
+                    if (isLandscapeData) brData += HOR;
+                    if (isPortraitData) brData += VER;
+                    if (isSquareData) brData += SQR;
+                    if (isFbfData) brData += FBF;
+                    if (isDspData) brData += DSP;
+                    if (isEtcData) brData += ETC;
+                }
+                break;
             default:
                 break;
         }
-        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, enData, deData, frData, jaData, mxData, zhsData, thumbnailLink, folderLink));
+        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, enData, deData, frData, jaData, mxData, zhsData, koData, brData, thumbnailLink, folderLink));
     }
 
     public void updateThumbnailLinkToDropboxLink(Integer creativeNumber, String dropboxLink) {
