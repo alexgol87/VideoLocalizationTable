@@ -140,6 +140,7 @@ public class GoogleDriveApiUtil {
                         localizationValues.get(lineIndex.get()).add(v.getZhsData());
                         localizationValues.get(lineIndex.get()).add(v.getKoData());
                         localizationValues.get(lineIndex.get()).add(v.getBrData());
+                        localizationValues.get(lineIndex.get()).add(v.getRuData());
                         localizationValues.get(lineIndex.get()).add("=IMAGE(\"" + v.getThumbnailLink() + "\";1)");
                         localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getThumbnailLink() + "\"; \"Preview\")");
                         lineIndex.getAndIncrement();

@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,7 +157,7 @@ public class GeneralUtil {
     public static void bannerAndLocaleRepositoryFilling(Drive service, String query) {
         String pageToken = null;
         while (true) {
-            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink)");
+            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink, parents)");
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
@@ -164,21 +165,26 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
-                    if (filename.contains("_b") && (fileNameParsedArray.length == 4 || fileNameParsedArray.length == 5) && fileNameParsedArray[1].matches("b\\d+") && fileNameParsedArray[2].length() >= 2 && bannerNumber > 0) {
-                        //System.out.println(file.getName().toLowerCase());
-                        if (!GoogleDriveBannerSpider.bannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + fileNameParsedArray[2]))
-                            GoogleDriveBannerSpider.bannerAndLocaleRepository.add(bannerNumber, fileNameParsedArray[2]);
-                        GoogleDriveBannerSpider.bannerAndLocaleRepository.update(bannerNumber + "_" + fileNameParsedArray[2], fileNameParsedArray[0], file.getThumbnailLink());
+                    System.out.println(file.getName() + " " + file.getWebViewLink());
+                    if (filename.matches("(.*)_b\\d+_(.*)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
+                        int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
+                        if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[2].replace("b", ""));
+                        if (filename.contains("_b") && (fileNameParsedArray.length == 4 || fileNameParsedArray.length == 5 || fileNameParsedArray.length == 6) && fileNameParsedArray[2].length() >= 2 && fileNameParsedArray[3].length() >= 2 && bannerNumber > 0) {
+                            //System.out.println(file.getName().toLowerCase());
+                            if (!GoogleDriveBannerSpider.bannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + fileNameParsedArray[3]))
+                                GoogleDriveBannerSpider.bannerAndLocaleRepository.add(bannerNumber, fileNameParsedArray[3]);
+                            GoogleDriveBannerSpider.bannerAndLocaleRepository.update(bannerNumber + "_" + fileNameParsedArray[3], fileNameParsedArray[1], file.getThumbnailLink());
+                        }
                     }
                 }
                 pageToken = result.getNextPageToken();
                 if (pageToken == null) break;
             }
         }
+
     }
 
-    public static void getFolderIdNameDictionaryFromGoogleDrive(Drive service) {
+    public static void getFolderIdNameDictionaryFromGoogleDrive(Drive service, Map<String, String> folderDictionary) {
         String pageToken = null;
         while (true) {
             FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "mimeType='application/vnd.google-apps.folder' and trashed = false", "nextPageToken, files(id, name)");
@@ -187,7 +193,7 @@ public class GeneralUtil {
                 System.out.println("No files found.");
             } else {
                 for (File file : files) {
-                    GoogleDriveSpider.folderDictionary.put(file.getId(), file.getName().toLowerCase());
+                    folderDictionary.put(file.getId(), file.getName().toLowerCase());
                 }
             }
             pageToken = result.getNextPageToken();

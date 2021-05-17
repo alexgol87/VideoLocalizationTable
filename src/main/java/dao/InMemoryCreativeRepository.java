@@ -12,7 +12,7 @@ public class InMemoryCreativeRepository {
     static Map<Integer, Creative> creativeTreeMap = new TreeMap<>();
 
     public void add(Integer creativeNumber) {
-        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, "", "", "", "", "", "", "", "", "", ""));
+        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, "", "", "", "", "", "", "", "", "", "", ""));
     }
 
     public void update(Integer creativeNumber, String locale, boolean isAllData, boolean isSquareData, boolean isLandscapeData, boolean isPortraitData, boolean isDspData, boolean isFbfData, boolean isEtcData, String thumbnailLink) {
@@ -25,6 +25,7 @@ public class InMemoryCreativeRepository {
         String zhsData = tmpCreative.getZhsData();
         String koData = tmpCreative.getKoData();
         String brData = tmpCreative.getBrData();
+        String ruData = tmpCreative.getRuData();
         if (thumbnailLink == null) thumbnailLink = tmpCreative.getThumbnailLink();
         String folderLink = tmpCreative.getFolderLink();
         final String ALL = "ALL";
@@ -124,10 +125,21 @@ public class InMemoryCreativeRepository {
                     if (isEtcData) brData += ETC;
                 }
                 break;
+            case "ru":
+                if (isAllData) ruData = ALL;
+                else {
+                    if (isLandscapeData) ruData += HOR;
+                    if (isPortraitData) ruData += VER;
+                    if (isSquareData) ruData += SQR;
+                    if (isFbfData) ruData += FBF;
+                    if (isDspData) ruData += DSP;
+                    if (isEtcData) ruData += ETC;
+                }
+                break;
             default:
                 break;
         }
-        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, enData, deData, frData, jaData, mxData, zhsData, koData, brData, thumbnailLink, folderLink));
+        creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, enData, deData, frData, jaData, mxData, zhsData, koData, brData, ruData, thumbnailLink, folderLink));
     }
 
     public void updateThumbnailLinkToDropboxLink(Integer creativeNumber, String dropboxLink) {

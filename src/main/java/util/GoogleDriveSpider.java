@@ -20,7 +20,7 @@ public class GoogleDriveSpider implements Runnable {
 
     public static final Set<String> videoErrorsCE = new LinkedHashSet<>();
     public static final Set<String> videoErrorsCM = new LinkedHashSet<>();
-    public static final Map<String, String> folderDictionary = new HashMap<>();
+    static final Map<String, String> folderDictionary = new HashMap<>();
 
     public GoogleDriveSpider() {
 
@@ -31,7 +31,7 @@ public class GoogleDriveSpider implements Runnable {
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
 
         folderDictionary.clear();
-        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive);
+        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive, folderDictionary);
 
         //CE
         videoErrorsCE.clear();
@@ -47,10 +47,10 @@ public class GoogleDriveSpider implements Runnable {
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v", "1RginzgJMxnxyc9BOHZcqsJaEBrg4Dwv6");
 
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COEm!A2:K");
-        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!V2:V200", videoErrorsCE);
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COEm!A2:L");
+        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!W:W200", videoErrorsCE);
 
-        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!Q1:Q1");
+        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COEm!R1:R1");
 
         // CM
         videoErrorsCM.clear();
@@ -66,10 +66,10 @@ public class GoogleDriveSpider implements Runnable {
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, videoRepository, "v", "1CXP7zG49GsMimpWKVbzzzyHzkZEhZGYf");
 
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COM!A2:K");
-        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!V2:V200", videoErrorsCM);
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", videoRepository, "video COM!A2:L");
+        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!W2:W200", videoErrorsCM);
 
-        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!Q1:Q1");
+        GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "video COM!R1:R1");
 
 
         GeneralUtil.execTime = GeneralUtil.endTimeFixing(start);
