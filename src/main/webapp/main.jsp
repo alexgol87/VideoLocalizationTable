@@ -15,6 +15,8 @@
     Videos last update time: ${requestScope.lastUpdateTimeVideo}
     <br/>
     Banners last update time: ${requestScope.lastUpdateTimeBanner}
+    <br/>
+    Community Banners last update time: ${requestScope.lastUpdateTimeCommunity}
 </div>
 <br/>
 <form action="" method="post" name="updateForm">
@@ -24,8 +26,9 @@
     </c:if>
     <c:if test="${requestScope.lockUpdate != 'true'}">
         <input type="hidden" name="runUpdate" value="yes">
-        <input type="radio" name="creativeType" value="video" id="video" checked><label for="video">Video</label> <input
-            type="radio" name="creativeType" value="banner" id="banner"><label for="video">Banner</label>
+        <input type="radio" name="creativeType" value="video" id="video" checked><label for="video">Videos</label> <input
+            type="radio" name="creativeType" value="banner" id="banner"><label for="video">Banners</label> <input
+            type="radio" name="creativeType" value="community" id="community"><label for="community">Community Banners</label>
         <button type="submit" class="submit">Update table</button>
         &nbsp;<input type="checkbox" name="updatePreview" value="yes"> Update Preview
     </c:if>

@@ -184,6 +184,37 @@ public class GeneralUtil {
 
     }
 
+    public static void communityBannerRepositoryFilling(Drive service, String query) {
+        String pageToken = null;
+        while (true) {
+            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink, parents)");
+            List<File> files = result.getFiles();
+            if (files == null || files.isEmpty()) {
+                System.out.println("No files found.");
+            } else {
+                for (File file : files) {
+                    String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
+                    String filename = file.getName().toLowerCase();
+                    System.out.println(file.getName() + " " + file.getWebViewLink());
+                    // if (filename.matches("(.*)_bc\\d+_(.*)") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
+                    if (filename.matches("(.*)_bc\\d+_(.*)")) {
+                        int bannerNumber = parseIntSafely(fileNameParsedArray[0].replace("bc", ""));
+                        if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("bc", ""));
+                        if (filename.contains("_bc") && (fileNameParsedArray.length > 3) && fileNameParsedArray[1].length() >= 4 && bannerNumber > 0) {
+                            //System.out.println(file.getName().toLowerCase());
+                            if (!GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + "en"))
+                                GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.add(bannerNumber, "en");
+                            GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.update(bannerNumber + "_" + "en", "800x800", file.getThumbnailLink());
+                        }
+                    }
+                }
+                pageToken = result.getNextPageToken();
+                if (pageToken == null) break;
+            }
+        }
+
+    }
+
     public static void getFolderIdNameDictionaryFromGoogleDrive(Drive service, Map<String, String> folderDictionary) {
         String pageToken = null;
         while (true) {

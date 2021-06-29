@@ -126,7 +126,20 @@ public class GoogleDriveApiUtil {
             List<List<Object>> localizationValues = new ArrayList<>();
             AtomicInteger lineIndex = new AtomicInteger();
 
-            repository.getAll()
+            if (rangeUpdate.equals("BC_COEm!A2:C")) {
+                repository.getAll()
+                        .stream()
+                        .forEach(v -> {
+
+                            localizationValues.add(new ArrayList<>());
+                            localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getFolderLink() + "\"; " + v.getCreativeNumber() + ")");
+                            localizationValues.get(lineIndex.get()).add("=IMAGE(\"" + v.getThumbnailLink() + "\";1)");
+                            localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getThumbnailLink() + "\"; \"Preview\")");
+                            lineIndex.getAndIncrement();
+
+                        });
+            }
+            else repository.getAll()
                     .stream()
                     .forEach(v -> {
 
