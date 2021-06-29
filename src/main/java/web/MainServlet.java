@@ -24,7 +24,8 @@ public class MainServlet extends HttpServlet {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
             //if (thread.getState() == Thread.State.TERMINATED)
             if (req.getParameter("creativeType").equals("video")) thread = new Thread(taskVideo);
-            else thread = new Thread(taskBanner);
+            else if (req.getParameter("creativeType").equals("banner")) thread = new Thread(taskBanner);
+            else thread = new Thread(taskCommunity);
             if (req.getParameter("updatePreview") != null) DropboxApiUtil.startUpdatePreview();
             else DropboxApiUtil.stopUpdatePreview();
             thread.start();
