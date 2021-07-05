@@ -13,6 +13,7 @@ public class VideoAndLocale implements CreativeAndLocale {
     private final boolean video768x1024;
     private final String locale;
     private final String thumbnailLink;
+    private final String fileName;
 
     public int getCreativeNumber() {
         return videoNumber;
@@ -63,7 +64,7 @@ public class VideoAndLocale implements CreativeAndLocale {
         return thumbnailLink;
     }
 
-    public VideoAndLocale(Integer videoNumber, boolean video1920x1080, boolean video1080x1920, boolean video1080x1080, boolean video1080x1350, boolean video960x640, boolean video640x960, boolean video1024x768, boolean video768x1024, String locale, String thumbnailLink) {
+    public VideoAndLocale(Integer videoNumber, boolean video1920x1080, boolean video1080x1920, boolean video1080x1080, boolean video1080x1350, boolean video960x640, boolean video640x960, boolean video1024x768, boolean video768x1024, String locale, String thumbnailLink, String fileName) {
         this.videoNumber = videoNumber;
         this.video1920x1080 = video1920x1080;
         this.video1080x1920 = video1080x1920;
@@ -75,6 +76,7 @@ public class VideoAndLocale implements CreativeAndLocale {
         this.video768x1024 = video768x1024;
         this.locale = locale;
         this.thumbnailLink = thumbnailLink;
+        this.fileName = fileName;
     }
 
     public boolean getSquareData() {
@@ -96,6 +98,11 @@ public class VideoAndLocale implements CreativeAndLocale {
     @Override
     public boolean getEtcData() {
         return false;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
     }
 
     public boolean getDspData() {

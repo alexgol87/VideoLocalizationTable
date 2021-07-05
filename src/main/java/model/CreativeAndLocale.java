@@ -21,4 +21,6 @@ public interface CreativeAndLocale {
     boolean getPortraitData();
 
     boolean getEtcData();
+
+    String getFileName();
 }

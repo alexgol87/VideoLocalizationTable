@@ -9,6 +9,7 @@ public class BannerAndLocale implements CreativeAndLocale {
     private final boolean etc;
     private final String locale;
     private final String thumbnailLink;
+    private final String fileName;
 
     public int getCreativeNumber() {
         return bannerNumber;
@@ -43,6 +44,11 @@ public class BannerAndLocale implements CreativeAndLocale {
         return etc;
     }
 
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
     public boolean getAllData() {
         return (banner1600x900 && banner900x1600 && banner800x800 && etc);
     }
@@ -55,7 +61,7 @@ public class BannerAndLocale implements CreativeAndLocale {
         return thumbnailLink;
     }
 
-    public BannerAndLocale(Integer bannerNumber, boolean banner1600x900, boolean banner900x1600, boolean banner800x800, boolean etc, String locale, String thumbnailLink) {
+    public BannerAndLocale(Integer bannerNumber, boolean banner1600x900, boolean banner900x1600, boolean banner800x800, boolean etc, String locale, String thumbnailLink, String fileName) {
         super();
         this.bannerNumber = bannerNumber;
         this.banner1600x900 = banner1600x900;
@@ -64,6 +70,7 @@ public class BannerAndLocale implements CreativeAndLocale {
         this.etc = etc;
         this.locale = locale;
         this.thumbnailLink = thumbnailLink;
+        this.fileName = fileName;
     }
 
 }

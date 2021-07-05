@@ -5,6 +5,7 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import dao.InMemoryCreativeRepository;
 
+import javax.swing.plaf.IconUIResource;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -29,7 +30,7 @@ public class GeneralUtil {
                 .forEach(v -> {
                     if (!repository.ifContainsCreative(v.getCreativeNumber()))
                         repository.add(v.getCreativeNumber());
-                    repository.update(v.getCreativeNumber(), v.getLocale(), v.getAllData(), v.getSquareData(), v.getLandscapeData(), v.getPortraitData(), v.getDspData(), v.getFbfData(), false, v.getThumbnailLink());
+                    repository.update(v.getCreativeNumber(), v.getLocale(), v.getAllData(), v.getSquareData(), v.getLandscapeData(), v.getPortraitData(), v.getDspData(), v.getFbfData(), false, v.getThumbnailLink(), v.getFileName());
                 });
     }
 
@@ -39,7 +40,7 @@ public class GeneralUtil {
                 .forEach(v -> {
                     if (!repository.ifContainsCreative(v.getCreativeNumber()))
                         repository.add(v.getCreativeNumber());
-                    repository.update(v.getCreativeNumber(), v.getLocale(), v.getAllData(), v.getSquareData(), v.getLandscapeData(), v.getPortraitData(), false, false, v.getEtcData(), v.getThumbnailLink());
+                    repository.update(v.getCreativeNumber(), v.getLocale(), v.getAllData(), v.getSquareData(), v.getLandscapeData(), v.getPortraitData(), false, false, v.getEtcData(), v.getThumbnailLink(), v.getFileName());
                 });
     }
 
@@ -79,7 +80,7 @@ public class GeneralUtil {
                         }
                         //int videoNumber = parseIntSafely(fileNameParsedArray[2].replace("v", ""));
                         if (((project.equals("ce") && videoNumber > 100) || project.equals("cm"))) {
-                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsVideoAndLocale(videoNumber + "_" + videoLocale))
+                            if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsCreativeAndLocale(videoNumber + "_" + videoLocale))
                                 GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, videoLocale);
                             GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + videoLocale, fileNameParsedArray[1], file.getThumbnailLink());
                             checkNameAndSizeOfCreative(file, fileNameParsedArray, videoErrors);
@@ -202,8 +203,10 @@ public class GeneralUtil {
                         if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("bc", ""));
                         if (filename.contains("_bc") && (fileNameParsedArray.length > 3) && fileNameParsedArray[1].length() >= 4 && bannerNumber > 0) {
                             //System.out.println(file.getName().toLowerCase());
+                            String fileNameForGdoc = filename.replace(fileNameParsedArray[0] + "_" + fileNameParsedArray[1] + "_", "").replace("_" + fileNameParsedArray[fileNameParsedArray.length - 1], "").replace("_", " ").replaceAll("\\d+x\\d+","");
+                            fileNameForGdoc = Character.toUpperCase(fileNameForGdoc.charAt(0)) + fileNameForGdoc.substring(1);
                             if (!GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + "en"))
-                                GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.add(bannerNumber, "en");
+                                GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.add(bannerNumber, "en", fileNameForGdoc);
                             GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.update(bannerNumber + "_" + "en", "800x800", file.getThumbnailLink());
                         }
                     }

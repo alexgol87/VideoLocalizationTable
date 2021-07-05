@@ -13,6 +13,7 @@ public class Creative {
     private String ruData;
     private String thumbnailLink;
     private String folderLink;
+    private String fileName;
 
     public Integer getCreativeNumber() {
         return creativeNumber;
@@ -54,9 +55,16 @@ public class Creative {
         return ruData;
     }
 
-
     public String getThumbnailLink() {
         return thumbnailLink;
+    }
+
+    public String getFolderLink() {
+        return folderLink;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public void setThumbnailLink(String thumbnailLink) {
@@ -67,7 +75,7 @@ public class Creative {
         this.folderLink = folderLink;
     }
 
-    public Creative(Integer creativeNumber, String enData, String deData, String frData, String jaData, String mxData, String zhsData, String koData, String brData, String ruData, String thumbnailLink, String folderLink) {
+    public Creative(Integer creativeNumber, String enData, String deData, String frData, String jaData, String mxData, String zhsData, String koData, String brData, String ruData, String thumbnailLink, String folderLink, String fileName) {
         this.creativeNumber = creativeNumber;
         this.enData = enData;
         this.deData = deData;
@@ -80,9 +88,7 @@ public class Creative {
         this.ruData = ruData;
         this.thumbnailLink = thumbnailLink;
         this.folderLink = folderLink;
+        this.fileName = fileName;
     }
 
-    public String getFolderLink() {
-        return folderLink;
-    }
 }

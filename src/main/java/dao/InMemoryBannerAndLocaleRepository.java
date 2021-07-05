@@ -8,12 +8,16 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class InMemoryBannerAndLocaleRepository {
+public class InMemoryBannerAndLocaleRepository implements InMemoryCreativeAndLocaleRepository {
 
     static Map<String, CreativeAndLocale> bannerAndLocaleMap = new TreeMap<>();
 
     public void add(Integer bannerNumber, String locale) {
-        bannerAndLocaleMap.put(bannerNumber + "_" + locale, new BannerAndLocale(bannerNumber, false, false, false, false, locale, null));
+        bannerAndLocaleMap.put(bannerNumber + "_" + locale, new BannerAndLocale(bannerNumber, false, false, false, false, locale, null, null));
+    }
+
+    public void add(Integer bannerNumber, String locale, String fileName) {
+        bannerAndLocaleMap.put(bannerNumber + "_" + locale, new BannerAndLocale(bannerNumber, false, false, false, false, locale, null, fileName));
     }
 
     public void update(String keyBannerAndLocale, String bannerSize, String newThumbnailLink) {
@@ -25,6 +29,7 @@ public class InMemoryBannerAndLocaleRepository {
         boolean etc = tmpBannerAndLocale.getEtcData();
         String locale = tmpBannerAndLocale.getLocale();
         String thumbnailLink = tmpBannerAndLocale.getThumbnailLink();
+        String fileName = tmpBannerAndLocale.getFileName();
 
         switch (bannerSize) {
             case "1600x900":
@@ -44,7 +49,7 @@ public class InMemoryBannerAndLocaleRepository {
                 if (locale.equals("en") && thumbnailLink == null) thumbnailLink = newThumbnailLink;
                 break;
         }
-        bannerAndLocaleMap.put(keyBannerAndLocale, new BannerAndLocale(bannerNumber, banner1600x900, banner900x1600, banner800x800, etc, locale, thumbnailLink));
+        bannerAndLocaleMap.put(keyBannerAndLocale, new BannerAndLocale(bannerNumber, banner1600x900, banner900x1600, banner800x800, etc, locale, thumbnailLink, fileName));
     }
 
     public List<CreativeAndLocale> getAll() {

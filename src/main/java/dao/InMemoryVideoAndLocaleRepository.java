@@ -1,5 +1,6 @@
 package dao;
 
+import model.CreativeAndLocale;
 import model.VideoAndLocale;
 
 import java.util.List;
@@ -7,16 +8,16 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class InMemoryVideoAndLocaleRepository {
+public class InMemoryVideoAndLocaleRepository implements InMemoryCreativeAndLocaleRepository {
 
-    static Map<String, VideoAndLocale> videoAndLocaleMap = new TreeMap<>();
+        static Map<String, VideoAndLocale> videoAndLocaleMap = new TreeMap<>();
 
     public void add(Integer videoNumber, String locale) {
-        videoAndLocaleMap.put(videoNumber + "_" + locale, new VideoAndLocale(videoNumber, false, false, false, false, false, false, false, false, locale, null));
+        videoAndLocaleMap.put(videoNumber + "_" + locale, new VideoAndLocale(videoNumber, false, false, false, false, false, false, false, false, locale, null, null));
     }
 
     public void update(String keyVideoAndLocale, String videoSize, String newThumbnailLink) {
-        VideoAndLocale tmpVideoAndLocale = this.getByVideoAndLocale(keyVideoAndLocale);
+        VideoAndLocale tmpVideoAndLocale = this.getByCreativeAndLocale(keyVideoAndLocale);
         int videoNumber = tmpVideoAndLocale.getCreativeNumber();
         boolean video1920x1080 = tmpVideoAndLocale.isVideo1920x1080();
         boolean video1080x1920 = tmpVideoAndLocale.isVideo1080x1920();
@@ -28,6 +29,7 @@ public class InMemoryVideoAndLocaleRepository {
         boolean video768x1024 = tmpVideoAndLocale.isVideo768x1024();
         String locale = tmpVideoAndLocale.getLocale();
         String thumbnailLink = tmpVideoAndLocale.getThumbnailLink();
+        String fileName = tmpVideoAndLocale.getFileName();
 
         switch (videoSize) {
             case "1920x1080":
@@ -69,18 +71,18 @@ public class InMemoryVideoAndLocaleRepository {
                 if (locale.equals("en") && thumbnailLink == null) thumbnailLink = newThumbnailLink;
                 break;
         }
-        videoAndLocaleMap.put(keyVideoAndLocale, new VideoAndLocale(videoNumber, video1920x1080, video1080x1920, video1080x1080, video1080x1350, video960x640, video640x960, video1024x768, video768x1024, locale, thumbnailLink));
+        videoAndLocaleMap.put(keyVideoAndLocale, new VideoAndLocale(videoNumber, video1920x1080, video1080x1920, video1080x1080, video1080x1350, video960x640, video640x960, video1024x768, video768x1024, locale, thumbnailLink, fileName));
     }
 
-    public List<VideoAndLocale> getAll() {
+    public List<CreativeAndLocale> getAll() {
         return videoAndLocaleMap.values().stream().collect(Collectors.toList());
     }
 
-    public VideoAndLocale getByVideoAndLocale(String videoAndLocale) {
+    public VideoAndLocale getByCreativeAndLocale(String videoAndLocale) {
         return videoAndLocaleMap.get(videoAndLocale);
     }
 
-    public boolean ifContainsVideoAndLocale(String videoAndLocale) {
+    public boolean ifContainsCreativeAndLocale(String videoAndLocale) {
         return videoAndLocaleMap.containsKey(videoAndLocale);
     }
 

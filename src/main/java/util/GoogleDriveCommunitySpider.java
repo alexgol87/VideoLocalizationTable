@@ -44,7 +44,7 @@ public class GoogleDriveCommunitySpider implements Runnable {
 
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, communityBannerRepository, "bc", "1J7x22CRa13DMe-7Kg9fIxvkyQdl2ZR2x");
 
-        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", communityBannerRepository, "BC_COEm!A2:C");
+        GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", communityBannerRepository, "BC_COEm!A2:D");
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "BC_COEm!K1:K1");
 
         GeneralUtil.execTime = endTimeFixing(start);

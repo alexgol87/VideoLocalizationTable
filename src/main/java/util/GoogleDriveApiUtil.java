@@ -126,7 +126,7 @@ public class GoogleDriveApiUtil {
             List<List<Object>> localizationValues = new ArrayList<>();
             AtomicInteger lineIndex = new AtomicInteger();
 
-            if (rangeUpdate.equals("BC_COEm!A2:C")) {
+            if (rangeUpdate.contains("BC_COEm!")) {
                 repository.getAll()
                         .stream()
                         .forEach(v -> {
@@ -135,6 +135,7 @@ public class GoogleDriveApiUtil {
                             localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getFolderLink() + "\"; " + v.getCreativeNumber() + ")");
                             localizationValues.get(lineIndex.get()).add("=IMAGE(\"" + v.getThumbnailLink() + "\";1)");
                             localizationValues.get(lineIndex.get()).add("=HYPERLINK(\"" + v.getThumbnailLink() + "\"; \"Preview\")");
+                            localizationValues.get(lineIndex.get()).add(v.getFileName());
                             lineIndex.getAndIncrement();
 
                         });
