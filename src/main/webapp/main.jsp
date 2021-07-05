@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/styles.css">
 </head>
 <body>
-<div class="header"><h2>Localization Tables Updater</h2></div>
+<div class="header"><h2>Creatives Tables Updater</h2></div>
 <div class="lastUpdateTime">
     Videos last update time: ${requestScope.lastUpdateTimeVideo}
     <br/>
