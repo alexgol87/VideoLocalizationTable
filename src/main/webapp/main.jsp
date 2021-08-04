@@ -27,7 +27,7 @@
     <c:if test="${requestScope.lockUpdate != 'true'}">
         <input type="hidden" name="runUpdate" value="yes">
         <input type="radio" name="creativeType" value="video" id="video" checked><label for="video">Videos</label> <input
-            type="radio" name="creativeType" value="banner" id="banner"><label for="video">Banners</label> <input
+            type="radio" name="creativeType" value="banner" id="banner"><label for="banner">Banners</label> <input
             type="radio" name="creativeType" value="community" id="community"><label for="community">Community Banners</label>
         <button type="submit" class="submit">Update table</button>
         &nbsp;<input type="checkbox" name="updatePreview" value="yes"> Update Preview

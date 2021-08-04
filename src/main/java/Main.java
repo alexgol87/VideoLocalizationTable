@@ -15,8 +15,8 @@ public class Main {
         String lastUpdateTime = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "video COEm!R1:R1");
         System.out.println("Last update time: " + lastUpdateTime);
         Instant start = startTimeFixing();
-        Runnable task = GoogleDriveCommunitySpider::new;
-       // Runnable task = GoogleDriveSpider::new;
+       // Runnable task = GoogleDriveCommunitySpider::new;
+        Runnable task = GoogleDriveSpider::new;
         Thread thread = new Thread(task);
         thread.start();
         thread.join();
