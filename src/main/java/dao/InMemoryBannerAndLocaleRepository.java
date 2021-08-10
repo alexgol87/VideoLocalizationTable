@@ -35,6 +35,7 @@ public class InMemoryBannerAndLocaleRepository implements InMemoryCreativeAndLoc
             case "1600x900":
                 banner1600x900 = true;
                 if (locale.equals("en")) thumbnailLink = newThumbnailLink;
+                if (!locale.equals("en") && thumbnailLink == null) thumbnailLink = newThumbnailLink;
                 break;
             case "900x1600":
                 banner900x1600 = true;

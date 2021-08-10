@@ -16,7 +16,8 @@ public class Main {
         System.out.println("Last update time: " + lastUpdateTime);
         Instant start = startTimeFixing();
        // Runnable task = GoogleDriveCommunitySpider::new;
-        Runnable task = GoogleDriveSpider::new;
+      //  Runnable task = GoogleDriveSpider::new;
+        Runnable task = GoogleDriveBannerSpider::new;
         Thread thread = new Thread(task);
         thread.start();
         thread.join();
