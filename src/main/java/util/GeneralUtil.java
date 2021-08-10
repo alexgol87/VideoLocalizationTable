@@ -5,7 +5,6 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import dao.InMemoryCreativeRepository;
 
-import javax.swing.plaf.IconUIResource;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -74,7 +73,7 @@ public class GeneralUtil {
                         String videoSize = "";
                         pattern = Pattern.compile(regexVideoSize);
                         matcher = pattern.matcher(filename.replace("х", "x"));
-                        System.out.println(filename);
+                        //System.out.println(filename);
                         while (matcher.find()) {
                             videoSize = matcher.group(0);
                         }
@@ -166,7 +165,7 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    System.out.println(file.getName() + " " + file.getWebViewLink());
+                    //System.out.println(file.getName() + " " + file.getWebViewLink());
                     if (filename.matches("(.*)_b\\d+_(.*)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
                         int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
                         if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[2].replace("b", ""));
@@ -196,7 +195,7 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    System.out.println(file.getName() + " " + file.getWebViewLink());
+                    //System.out.println(file.getName() + " " + file.getWebViewLink());
                     // if (filename.matches("(.*)_bc\\d+_(.*)") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
                     if (filename.matches("(.*)_bc\\d+_(.*)")) {
                         int bannerNumber = parseIntSafely(fileNameParsedArray[0].replace("bc", ""));
