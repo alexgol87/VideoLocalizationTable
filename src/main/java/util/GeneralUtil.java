@@ -54,7 +54,7 @@ public class GeneralUtil {
                 for (File file : files) {
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
-                    if (filename.matches("(.*)_\\d+s(.*)") && filename.matches("(.*)_v\\d+_(.*)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)")) {
+                    if (filename.matches("(.*)_\\d+s?(.*)") && filename.matches("(.*)_v\\d+_(.*)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(видеоряд)")) {
                         String regexVideoNumber = "_v\\d+";
                         int videoNumber = 0;
                         Pattern pattern = Pattern.compile(regexVideoNumber);
@@ -114,6 +114,11 @@ public class GeneralUtil {
             }
             if (file.getName().contains("m4v")) {
                 String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong extension M4V. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                //System.out.println(error);
+                videoErrors.add(error);
+            }
+            if (!file.getName().matches("(.*)_\\d{1,2}s(.*)")) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s does not have correct length in seconds. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 videoErrors.add(error);
             }
