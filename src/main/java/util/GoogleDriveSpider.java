@@ -39,7 +39,7 @@ public class GoogleDriveSpider implements Runnable {
         videoRepository.clear();
         videoAndLocaleRepository.clear();
 
-        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "name contains 'ce_' and mimeType = 'video/mp4' and trashed = false", "ce", videoErrorsCE);
+        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "name contains 'ce_' and mimeType = 'video/mp4' and trashed = false", "ce", videoErrorsCE, marketingCreativesTeamDrive);
         GeneralUtil.videoRepositoryFilling(videoRepository);
 
         dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, DropboxVideoPreviewFolderCE);
@@ -58,7 +58,7 @@ public class GoogleDriveSpider implements Runnable {
         videoRepository.clear();
         videoAndLocaleRepository.clear();
 
-        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "name contains 'cm_' and mimeType = 'video/mp4' and trashed = false", "cm", videoErrorsCM);
+        GeneralUtil.videoAndLocaleRepositoryFilling(serviceDrive, "name contains 'cm_' and mimeType = 'video/mp4' and trashed = false", "cm", videoErrorsCM, marketingCreativesTeamDrive);
         GeneralUtil.videoRepositoryFilling(videoRepository);
 
         dropboxApiUtil.getDropboxFilesAndLinks(videoRepository, DropboxVideoPreviewFolderCM);

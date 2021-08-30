@@ -43,10 +43,10 @@ public class GeneralUtil {
                 });
     }
 
-    public static void videoAndLocaleRepositoryFilling(Drive service, String query, String project, Set<String> videoErrors) {
+    public static void videoAndLocaleRepositoryFilling(Drive service, String query, String project, Set<String> videoErrors, String teamDrive) {
         String pageToken = null;
         while (true) {
-            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser, parents, size)", "");
+            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, thumbnailLink, videoMediaMetadata, modifiedTime, lastModifyingUser, parents, size)", teamDrive);
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
