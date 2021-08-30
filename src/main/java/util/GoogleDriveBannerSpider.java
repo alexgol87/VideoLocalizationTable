@@ -20,6 +20,7 @@ public class GoogleDriveBannerSpider implements Runnable {
     static final String DropboxBannerPreviewFolderCE = "/CE/BannerPreviewFolder";
     static final String DropboxBannerPreviewFolderCM = "/CM/BannerPreviewFolder";
     static final Map<String, String> folderDictionary = new HashMap<>();
+    static final String marketingCreativesTeamDrive = "0AF94mSslAVMqUk9PVA";
 
     public GoogleDriveBannerSpider() {
 
@@ -30,20 +31,20 @@ public class GoogleDriveBannerSpider implements Runnable {
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
 
         folderDictionary.clear();
-        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive, folderDictionary);
+        GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive, folderDictionary, marketingCreativesTeamDrive);
 
         //CE
         bannerRepository.clear();
         bannerAndLocaleRepository.clear();
 
-        GeneralUtil.bannerAndLocaleRepositoryFilling(serviceDrive, "name contains 'ce_' and (mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false");
+        GeneralUtil.bannerAndLocaleRepositoryFilling(serviceDrive, "name contains 'ce_' and (mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false", marketingCreativesTeamDrive);
         GeneralUtil.bannerRepositoryFilling(bannerRepository);
 
         dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, DropboxBannerPreviewFolderCE);
         dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, DropboxBannerPreviewFolderCE);
         dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, DropboxBannerPreviewFolderCE);
 
-        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b", "1w_aLc_CIy3RBRycNoG5QcbHnK6ORsowy");
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b", "1w_aLc_CIy3RBRycNoG5QcbHnK6ORsowy", marketingCreativesTeamDrive);
 
         GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "banners COEm!A2:L");
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "banners COEm!T1:T1");
@@ -54,14 +55,14 @@ public class GoogleDriveBannerSpider implements Runnable {
         bannerRepository.clear();
         bannerAndLocaleRepository.clear();
 
-        GeneralUtil.bannerAndLocaleRepositoryFilling(serviceDrive, "name contains 'cm_' and (mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false");
+        GeneralUtil.bannerAndLocaleRepositoryFilling(serviceDrive, "name contains 'cm_' and (mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false", marketingCreativesTeamDrive);
         GeneralUtil.bannerRepositoryFilling(bannerRepository);
 
         dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, DropboxBannerPreviewFolderCM);
         dropboxApiUtil.newPreviewUploadingToDropbox(bannerRepository, DropboxBannerPreviewFolderCM);
         dropboxApiUtil.getDropboxFilesAndLinks(bannerRepository, DropboxBannerPreviewFolderCM);
 
-        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b", "13fM6d2AxYbZSfBfhtF9YF2PPi3eDEAPt");
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, bannerRepository, "b", "13fM6d2AxYbZSfBfhtF9YF2PPi3eDEAPt", marketingCreativesTeamDrive);
 
         GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", bannerRepository, "banners COM!A2:L");
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "banners COM!T1:T1");

@@ -20,6 +20,7 @@ public class GoogleDriveCommunitySpider implements Runnable {
     static final String DropboxCommunityBannerPreviewFolderCE = "/CE/CommunityBannerPreviewFolder";
     static final String DropboxCommunityBannerPreviewFolderCM = "/CM/CommunityBannerPreviewFolder";
     static final Map<String, String> folderDictionary = new HashMap<>();
+    static final String marketingCommunityTeamDrive = "0AKtTKKJJOgywUk9PVA";
 
     public GoogleDriveCommunitySpider() {
 
@@ -30,19 +31,18 @@ public class GoogleDriveCommunitySpider implements Runnable {
         Sheets serviceSheets = GoogleDriveApiUtil.buildSheetsApiClientService();
 
         folderDictionary.clear();
-       // GeneralUtil.getFolderIdNameDictionaryFromGoogleDrive(serviceDrive, folderDictionary);
 
         communityBannerAndLocaleRepository.clear();
         communityBannerRepository.clear();
 
-        GeneralUtil.communityBannerRepositoryFilling(serviceDrive, "(mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false and name contains 'ce_bc'");
+        GeneralUtil.communityBannerRepositoryFilling(serviceDrive, "(mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false and name contains 'ce_bc'", marketingCommunityTeamDrive);
         GeneralUtil.bannerRepositoryFilling(communityBannerRepository);
 
         dropboxApiUtil.getDropboxFilesAndLinks(communityBannerRepository, DropboxCommunityBannerPreviewFolderCE);
         dropboxApiUtil.newPreviewUploadingToDropbox(communityBannerRepository, DropboxCommunityBannerPreviewFolderCE);
         dropboxApiUtil.getDropboxFilesAndLinks(communityBannerRepository, DropboxCommunityBannerPreviewFolderCE);
 
-        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, communityBannerRepository, "bc", "1J7x22CRa13DMe-7Kg9fIxvkyQdl2ZR2x");
+        GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, communityBannerRepository, "bc", "1J7x22CRa13DMe-7Kg9fIxvkyQdl2ZR2x", marketingCommunityTeamDrive);
 
         GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", communityBannerRepository, "BC_COEm!A2:D");
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "BC_COEm!K1:K1");

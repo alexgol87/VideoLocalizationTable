@@ -106,12 +106,12 @@ public class GoogleDriveApiUtil {
         return service;
     }
 
-    public static FileList getFileListFromDriveAPI(Drive service, String pageToken, String query, String fields) {
+    public static FileList getFileListFromDriveAPI(Drive service, String pageToken, String query, String fields, String teamDrive) {
         FileList fileList = null;
         try {
             fileList = service.files().list()
                     .setQ(query)
-                    .setTeamDriveId("0AMS6TbWRrBLJUk9PVA")
+                    .setTeamDriveId(teamDrive)
                     .setCorpora("drive")
                     .setSupportsTeamDrives(true)
                     .setIncludeTeamDriveItems(true)
