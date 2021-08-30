@@ -39,8 +39,8 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("execTime", GeneralUtil.execTime);
             req.setAttribute("videoErrorsCE", GoogleDriveSpider.videoErrorsCE.size());
             req.setAttribute("videoErrorsCM", GoogleDriveSpider.videoErrorsCM.size());
-            //GoogleDriveSpider.videoErrorsCE.clear();
-            //GoogleDriveSpider.videoErrorsCM.clear();
+            GoogleDriveSpider.videoErrorsCE.clear();
+            GoogleDriveSpider.videoErrorsCM.clear();
             lastUpdateTimeVideo = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "video COEm!R1:R1");
             lastUpdateTimeBanner = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "banners COEm!T1:T1");
             lastUpdateTimeCommunity = GoogleDriveApiUtil.getModifiedTime(GoogleDriveApiUtil.buildSheetsApiClientService(), "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "BC_COEm!K1:K1");
