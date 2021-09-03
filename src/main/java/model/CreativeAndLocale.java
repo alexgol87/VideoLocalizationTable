@@ -1,5 +1,6 @@
 package model;
 
+// интерфейс для двух промежуточных классов
 public interface CreativeAndLocale {
 
     boolean getAllData();

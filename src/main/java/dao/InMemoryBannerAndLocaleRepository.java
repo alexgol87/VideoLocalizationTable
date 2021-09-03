@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+// репозиторий для хранения промежуточных сущностей "Баннер и его локали"
 public class InMemoryBannerAndLocaleRepository implements InMemoryCreativeAndLocaleRepository {
 
+    // хранилище данных - ассоциативный массив, в котором хранятся bannerNumber_locale и данные о самой сущности "Баннер и его локали"
     static Map<String, CreativeAndLocale> bannerAndLocaleMap = new TreeMap<>();
 
+    // добавление данных о сущности
     public void add(Integer bannerNumber, String locale) {
         bannerAndLocaleMap.put(bannerNumber + "_" + locale, new BannerAndLocale(bannerNumber, false, false, false, false, locale, null, null));
     }
@@ -20,6 +23,7 @@ public class InMemoryBannerAndLocaleRepository implements InMemoryCreativeAndLoc
         bannerAndLocaleMap.put(bannerNumber + "_" + locale, new BannerAndLocale(bannerNumber, false, false, false, false, locale, null, fileName));
     }
 
+    // обновление данных о сущности (добавление размера, ссылки на превью)
     public void update(String keyBannerAndLocale, String bannerSize, String newThumbnailLink) {
         BannerAndLocale tmpBannerAndLocale = (BannerAndLocale) this.getByCreativeAndLocale(keyBannerAndLocale);
         int bannerNumber = tmpBannerAndLocale.getCreativeNumber();

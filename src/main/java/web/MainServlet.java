@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+// класс основного сервлета
 public class MainServlet extends HttpServlet {
 
     private static Runnable taskVideo = GoogleDriveSpider::new;
@@ -22,6 +22,7 @@ public class MainServlet extends HttpServlet {
     private static final String FALSE = "false";
 
     @Override
+    // метод срабатывает при отправке формы
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ((thread.getState() == Thread.State.NEW || thread.getState() == Thread.State.TERMINATED) && req.getParameter("runUpdate").equals("yes")) {
             //if (thread.getState() == Thread.State.TERMINATED)
@@ -51,13 +52,12 @@ public class MainServlet extends HttpServlet {
         req.setAttribute("lastUpdateTimeVideo", lastUpdateTimeVideo);
         req.setAttribute("lastUpdateTimeBanner", lastUpdateTimeBanner);
         req.setAttribute("lastUpdateTimeCommunity", lastUpdateTimeCommunity);
-        req.getRequestDispatcher("main.jsp").
-
-                forward(req, resp);
+        req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
 
     @Override
+    // метод срабатывает при открытии страницы в браузере
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (thread == null) thread = new Thread();
         else if ((thread.getState() == Thread.State.RUNNABLE)) {

@@ -12,8 +12,8 @@ import java.util.Map;
 import static util.GeneralUtil.endTimeFixing;
 import static util.GeneralUtil.startTimeFixing;
 
+// класс для работы с поиском баннерных креативов на Google Drive
 public class GoogleDriveBannerSpider implements Runnable {
-
 
     static final InMemoryBannerAndLocaleRepository bannerAndLocaleRepository = new InMemoryBannerAndLocaleRepository();
     static final InMemoryCreativeRepository bannerRepository = new InMemoryCreativeRepository();

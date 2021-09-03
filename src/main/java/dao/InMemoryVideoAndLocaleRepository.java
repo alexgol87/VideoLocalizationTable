@@ -8,14 +8,18 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+// репозиторий для хранения промежуточных сущностей "Видео и его локали"
 public class InMemoryVideoAndLocaleRepository implements InMemoryCreativeAndLocaleRepository {
 
-        static Map<String, VideoAndLocale> videoAndLocaleMap = new TreeMap<>();
+    // хранилище данных - ассоциативный массив, в котором хранятся vudeoNumber_locale и данные о самой сущности "Видео и его локали"
+    static Map<String, VideoAndLocale> videoAndLocaleMap = new TreeMap<>();
 
+    // добавление данных о сущности
     public void add(Integer videoNumber, String locale) {
         videoAndLocaleMap.put(videoNumber + "_" + locale, new VideoAndLocale(videoNumber, false, false, false, false, false, false, false, false, locale, null, null));
     }
 
+    // обновление данных о сущности (добавление размера, ссылки на превью)
     public void update(String keyVideoAndLocale, String videoSize, String newThumbnailLink) {
         VideoAndLocale tmpVideoAndLocale = this.getByCreativeAndLocale(keyVideoAndLocale);
         int videoNumber = tmpVideoAndLocale.getCreativeNumber();

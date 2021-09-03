@@ -1,7 +1,10 @@
 package model;
 
+// класс конечной сущности "Креатив" для публикации в гугл-таблице
 public class Creative {
+    // номер креатива
     private Integer creativeNumber;
+    // данные о наличии локалей
     private String enData;
     private String deData;
     private String frData;
@@ -11,8 +14,11 @@ public class Creative {
     private String koData;
     private String brData;
     private String ruData;
+    // ссылка на превью
     private String thumbnailLink;
+    // ссылка на основную папку с креативом, где уже хранятся подпапки с локалями
     private String folderLink;
+    // имя файла
     private String fileName;
 
     public Integer getCreativeNumber() {

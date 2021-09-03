@@ -17,11 +17,14 @@ import java.nio.file.StandardCopyOption;
 
 import static util.GeneralUtil.parseIntSafely;
 
+// класс для работы с Dropbox
 public class DropboxApiUtil {
     private String ACCESS_TOKEN = System.getenv("dropbox_key");
     private static final DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/AwemVideoCreativesPreview").build();
     private DbxClientV2 client;
+    // временная папка, в которую изначально копируется preview-картинка креатива
     private static final String DIRECTORY_FOR_PREVIEW = "tmp/";
+    // updatePreview - переменная показывает, был ли с веб-страницы запрос на обновление preview
     private static boolean updatePreview = false;
 
     public DropboxApiUtil() {
@@ -31,6 +34,7 @@ public class DropboxApiUtil {
         this.client = new DbxClientV2(config, ACCESS_TOKEN);
     }
 
+    // метод удаляет папку с preview и пересоздает ее при необходимости обновления preview
     void createDropboxPreviewFolder(String directory) {
         try {
             if (updatePreview) {
@@ -55,18 +59,24 @@ public class DropboxApiUtil {
     void getDropboxFilesAndLinks(InMemoryCreativeRepository repository, String previewDirectory) {
         try {
             createDropboxPreviewFolder(previewDirectory);
+            // берем все файлы, лежащие в папке с preview
             ListFolderResult result = client.files().listFolder(previewDirectory);
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
+                    // вытаскиваем номер креатива из имени файла
                     int creativeNumber = parseIntSafely(metadata.getName().replace(".jpg", ""));
+                    // для каждого экземпляра класса Creative проверяем наличие информации о креативе в репозитории и отсутствие сформированной ссылки на dropbox в поле thumbnailLink
                     if (repository.ifContainsCreative(creativeNumber) && !repository.getByCreativeNumber(creativeNumber).getThumbnailLink().contains("dropbox.com")) {
+                        // запрашиваем все имеющиеся сформированные ссылки у файлов с папки preview
                         ListSharedLinksResult result2 = client.sharing().listSharedLinksBuilder()
                                 .withPath(metadata.getPathLower()).withDirectOnly(true).start();
                         if (!result2.getLinks().isEmpty()) {
                             for (SharedLinkMetadata metadata2 : result2.getLinks()) {
+                                // для каждого экземпляра класса Creative, у которого есть созданная ссылка на dropbox, обновляем поле thumbnailLink
                                 repository.updateThumbnailLinkToDropboxLink(creativeNumber, metadata2.getUrl());
                             }
                         } else {
+                            // // для каждого экземпляра класса Creative, у которого нет  созданной ссылки на dropbox, формируем эту ссылку и обновляем поле thumbnailLink
                             SharedLinkMetadata sharedLink = client.sharing().createSharedLinkWithSettings(metadata.getPathLower());
                             repository.updateThumbnailLinkToDropboxLink(creativeNumber, sharedLink.getUrl());
                         }
@@ -82,6 +92,7 @@ public class DropboxApiUtil {
         }
     }
 
+    // загружаем новые превью в папку на Dropbox
     void newPreviewUploadingToDropbox(InMemoryCreativeRepository repository, String previewDirectory) {
         //create tmp folder
         File previewFolder = new File(DIRECTORY_FOR_PREVIEW);

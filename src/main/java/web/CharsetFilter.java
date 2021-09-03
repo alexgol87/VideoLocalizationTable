@@ -3,7 +3,7 @@ package web;
 import javax.servlet.*;
 import java.io.IOException;
 
-
+// сервлет нужен для того, чтобы корректно отображались русские буквы на веб-страницах
 public class CharsetFilter implements Filter {
 
     private String encoding;

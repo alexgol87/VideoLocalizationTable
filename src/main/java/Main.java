@@ -9,6 +9,7 @@ import java.util.Arrays;
 import static util.GeneralUtil.*;
 import static util.GoogleDriveSpider.videoErrorsCE;
 
+// класс для тестирования работы скрипта без веба, основной класс, из которого запускается программа в Java, если не задана другая конфигурация
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {

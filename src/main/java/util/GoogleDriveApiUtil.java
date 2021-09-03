@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+// класс для общих методов работы с Google Drive API: поиск файлов, публикация в Google Spreadsheets
 public class GoogleDriveApiUtil {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS = System.getenv("googledrive_credentials");
@@ -65,14 +66,13 @@ public class GoogleDriveApiUtil {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
+    // увеличиваем возможный таймаут при обращении к Google Drive API
+    //TODO добавить использование этого таймаута, сейчас он не используется
     private HttpRequestInitializer setHttpTimeout(final HttpRequestInitializer requestInitializer) {
-        return new HttpRequestInitializer() {
-            @Override
-            public void initialize(HttpRequest httpRequest) throws IOException {
-                requestInitializer.initialize(httpRequest);
-                httpRequest.setConnectTimeout(3 * 60000);  // 3 minutes connect timeout
-                httpRequest.setReadTimeout(3 * 60000);  // 3 minutes read timeout
-            }
+        return httpRequest -> {
+            requestInitializer.initialize(httpRequest);
+            httpRequest.setConnectTimeout(3 * 60000);  // 3 minutes connect timeout
+            httpRequest.setReadTimeout(3 * 60000);  // 3 minutes read timeout
         };
     }
 
@@ -106,6 +106,7 @@ public class GoogleDriveApiUtil {
         return service;
     }
 
+    // метод для поиска нужных файлов в Google Drive
     public static FileList getFileListFromDriveAPI(Drive service, String pageToken, String query, String fields, String teamDrive) {
         FileList fileList = null;
         try {
@@ -126,6 +127,7 @@ public class GoogleDriveApiUtil {
         return fileList;
     }
 
+    // метод для очистки Google таблицы и публикации новых данных
     public static void clearAndPublishNewTableOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, InMemoryCreativeRepository repository, String rangeUpdate) {
         try {
             // clear old values
@@ -185,6 +187,7 @@ public class GoogleDriveApiUtil {
         }
     }
 
+    // метод для очистки ошибок и публикации нового их списка
     public static void clearAndPublishErrorLogOnSpreadsheet(Sheets service, String spreadsheetId, String valueInputOption, String rangeUpdate, Set<String> videoErrors) {
         try {
             // clear old values
@@ -219,6 +222,7 @@ public class GoogleDriveApiUtil {
         }
     }
 
+    // метод для публикации времени последнего обновления таблицы
     public static void publishModifiedTime(Sheets service, String spreadsheetId, String valueInputOption, String rangeUpdate) {
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -240,6 +244,7 @@ public class GoogleDriveApiUtil {
         }
     }
 
+    // метод для взятия времени последнего обновления таблицы
     public static String getModifiedTime(Sheets service, String spreadsheetId, String rangeUpdate) {
         ValueRange response = null;
         try {

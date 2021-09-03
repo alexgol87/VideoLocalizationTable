@@ -15,14 +15,18 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// класс общих утилит для всех видов креативов
 public class GeneralUtil {
 
+    // общее время работы скрипта
     public static String execTime;
 
+    // метод для проверки возможности выделения номера креатива из имена креатива
     static int parseIntSafely(String s) {
         return (s.matches("\\d+") && s.length() <= 9) ? Integer.parseInt(s) : -1;
     }
 
+    // метод наполнения репозитория конечных сущностей (класс Creative) для видео креативов
     static void videoRepositoryFilling(InMemoryCreativeRepository repository) {
         GoogleDriveSpider.videoAndLocaleRepository.getAll()
                 .stream()
@@ -33,6 +37,7 @@ public class GeneralUtil {
                 });
     }
 
+    // метод наполнения репозитория конечных сущностей (класс Creative) для баннерных креативов
     static void bannerRepositoryFilling(InMemoryCreativeRepository repository) {
         GoogleDriveBannerSpider.bannerAndLocaleRepository.getAll()
                 .stream()
@@ -43,6 +48,7 @@ public class GeneralUtil {
                 });
     }
 
+    // метод наполнения репозитория промежуточных сущностей (класс VideoAndLocale) для видео креативов
     public static void videoAndLocaleRepositoryFilling(Drive service, String query, String project, Set<String> videoErrors, String teamDrive) {
         String pageToken = null;
         while (true) {
@@ -93,6 +99,7 @@ public class GeneralUtil {
         }
     }
 
+    // класс проверки ошибок в именах и содержимом креативов
     public static void checkNameAndSizeOfCreative(File file, String[] fileNameParsedArray, Set<String> videoErrors) {
         try {
             int videoWidth = file.getVideoMediaMetadata().getWidth();
@@ -140,6 +147,7 @@ public class GeneralUtil {
 
     }
 
+    // метод обходит все папки внутри папки video/banners и добавляет ссылку на папку Google Drive в поле folderLink в репозиторий для экземпляров класса Creative
     public static void getFolderLinksFromGoogleDrive(Drive service, InMemoryCreativeRepository repository, String creativeType, String directory, String teamDrive) {
         String pageToken = null;
         while (true) {
@@ -160,9 +168,11 @@ public class GeneralUtil {
         }
     }
 
+    // метод наполнения репозитория промежуточных сущностей (класс BannerAndLocale) для баннерных креативов
     public static void bannerAndLocaleRepositoryFilling(Drive service, String query, String teamDrive) {
         String pageToken = null;
         while (true) {
+            // делаем обход Google Drive с целью поиска баннерных креативов в правильном нейминге
             FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink, parents)", teamDrive);
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
@@ -170,9 +180,11 @@ public class GeneralUtil {
                 break;
             } else {
                 for (File file : files) {
+                    // берем имя файла и разбиваем его на части, разделенные символом "_"
                     String[] fileNameParsedArray = file.getName().toLowerCase().split("_");
                     String filename = file.getName().toLowerCase();
                     //System.out.println(file.getName() + " " + file.getWebViewLink());
+                    // проверяем, чтобы это были не файлы в папках с исходниками
                     if (filename.matches("(.*)_b\\d+_(.*)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
                         int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
                         if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[2].replace("b", ""));
@@ -191,6 +203,7 @@ public class GeneralUtil {
 
     }
 
+    // метод наполнения репозитория промежуточных сущностей (класс BannerAndLocale) для баннерных креативов Community
     public static void communityBannerRepositoryFilling(Drive service, String query, String teamDrive) {
         String pageToken = null;
         while (true) {
@@ -225,6 +238,7 @@ public class GeneralUtil {
 
     }
 
+    // формируем ассоциативный массив (словарь) ID папки - имя папки, такой словарь нужен, чтобы по нему определять имя папки при поиске креативов и отсеивать креативы из папок с исходниками
     public static void getFolderIdNameDictionaryFromGoogleDrive(Drive service, Map<String, String> folderDictionary, String teamDrive) {
         String pageToken = null;
         while (true) {
@@ -242,10 +256,12 @@ public class GeneralUtil {
         }
     }
 
+    // засекаем время начала работы скрипта
     public static Instant startTimeFixing() {
         return Instant.now();
     }
 
+    // засекаем время окончания работы скрипта
     public static String endTimeFixing(Instant start) {
         Instant end = Instant.now();
         DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm:ss");

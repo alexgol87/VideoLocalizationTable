@@ -4,15 +4,16 @@ import model.CreativeAndLocale;
 
 import java.util.List;
 
+// интерфейс для двух конечных классов
 public interface InMemoryCreativeAndLocaleRepository {
 
-    public void add(Integer creativeNumber, String locale);
+    void add(Integer creativeNumber, String locale);
 
-    public void update(String keyCreativeAndLocale, String creativeSize, String newThumbnailLink);
+    void update(String keyCreativeAndLocale, String creativeSize, String newThumbnailLink);
 
-    public List<CreativeAndLocale> getAll();
+    List<CreativeAndLocale> getAll();
 
-    public CreativeAndLocale getByCreativeAndLocale(String cretiveAndLocale);
+    CreativeAndLocale getByCreativeAndLocale(String cretiveAndLocale);
 
-    public boolean ifContainsCreativeAndLocale(String cretiveAndLocale);
+    boolean ifContainsCreativeAndLocale(String cretiveAndLocale);
 }

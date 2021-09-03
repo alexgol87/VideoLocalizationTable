@@ -7,14 +7,17 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+// репозиторий для хранения конечных сущностей "Креатив" (баннер или видео)
 public class InMemoryCreativeRepository {
 
     static Map<Integer, Creative> creativeTreeMap = new TreeMap<>();
 
+    // добавление данных о сущности
     public void add(Integer creativeNumber) {
         creativeTreeMap.put(creativeNumber, new Creative(creativeNumber, "", "", "", "", "", "", "", "", "", "", "", ""));
     }
 
+    // обновление данных о сущности (добавление размера для определенной локали, ссылки на превью, на папку)
     public void update(Integer creativeNumber, String locale, boolean isAllData, boolean isSquareData, boolean isLandscapeData, boolean isPortraitData, boolean isDspData, boolean isFbfData, boolean isEtcData, String thumbnailLink, String fileName) {
         Creative tmpCreative = this.getByCreativeNumber(creativeNumber);
         String enData = tmpCreative.getEnData();

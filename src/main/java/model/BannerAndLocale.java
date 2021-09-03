@@ -1,14 +1,20 @@
 package model;
 
+// класс промежуточной сущности "Баннер и его локали"
 public class BannerAndLocale implements CreativeAndLocale {
 
+    // номер баннера
     private final Integer bannerNumber;
+    // факт наличия определенных размеров
     private final boolean banner1600x900;
     private final boolean banner900x1600;
     private final boolean banner800x800;
     private final boolean etc;
+    // локаль
     private final String locale;
+    // ссылка на превью
     private final String thumbnailLink;
+    // имя файла
     private final String fileName;
 
     public int getCreativeNumber() {

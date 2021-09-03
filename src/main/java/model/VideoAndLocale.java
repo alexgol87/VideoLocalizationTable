@@ -1,8 +1,11 @@
 package model;
 
+// класс промежуточной сущности "Видео и его локали"
 public class VideoAndLocale implements CreativeAndLocale {
 
+    // номер видео
     private final Integer videoNumber;
+    // факт наличия определенных размеров
     private final boolean video1920x1080;
     private final boolean video1080x1920;
     private final boolean video1080x1080;
@@ -11,8 +14,11 @@ public class VideoAndLocale implements CreativeAndLocale {
     private final boolean video640x960;
     private final boolean video1024x768;
     private final boolean video768x1024;
+    // локаль
     private final String locale;
+    // ссылка на превью
     private final String thumbnailLink;
+    // имя файла
     private final String fileName;
 
     public int getCreativeNumber() {
