@@ -89,7 +89,7 @@ public class GeneralUtil {
                             if (!GoogleDriveSpider.videoAndLocaleRepository.ifContainsCreativeAndLocale(videoNumber + "_" + videoLocale))
                                 GoogleDriveSpider.videoAndLocaleRepository.add(videoNumber, videoLocale);
                             GoogleDriveSpider.videoAndLocaleRepository.update(videoNumber + "_" + videoLocale, fileNameParsedArray[1], file.getThumbnailLink());
-                            checkNameAndSizeOfCreative(file, fileNameParsedArray, videoErrors);
+                            checkNameAndSizeOfVideoCreative(file, fileNameParsedArray, videoErrors);
                         }
                     }
                 }
@@ -99,14 +99,14 @@ public class GeneralUtil {
         }
     }
 
-    // класс проверки ошибок в именах и содержимом креативов
-    public static void checkNameAndSizeOfCreative(File file, String[] fileNameParsedArray, Set<String> videoErrors) {
+    // класс проверки ошибок в именах и содержимом видео креативов
+    public static void checkNameAndSizeOfVideoCreative(File file, String[] fileNameParsedArray, Set<String> videoErrors) {
         try {
             int videoWidth = file.getVideoMediaMetadata().getWidth();
             int videoHeight = file.getVideoMediaMetadata().getHeight();
             if (fileNameParsedArray[1].matches("(.*)\\d+x\\d+(.*)"))
                 if (videoWidth != Integer.parseInt(fileNameParsedArray[1].replace("х", "x").split("x")[0]) || videoHeight != Integer.parseInt(fileNameParsedArray[1].replace("х", "x").split("x")[1])) {
-                    String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getVideoMediaMetadata().getWidth() + "x" + file.getVideoMediaMetadata().getHeight(), file.getLastModifyingUser().getDisplayName());
+                    String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), videoWidth + "x" + videoHeight, file.getLastModifyingUser().getDisplayName());
                     //System.out.println(error);
                     videoErrors.add(error);
                 }
@@ -147,8 +147,39 @@ public class GeneralUtil {
 
     }
 
+    // класс проверки ошибок в именах и содержимом баннерных креативов
+    public static void checkNameAndSizeOfBannerCreative(File file, String[] fileNameParsedArray, Set<String> bannerErrors) {
+        try {
+            int bannerWidth = file.getImageMediaMetadata().getWidth();
+            int bannerHeight = file.getImageMediaMetadata().getHeight();
+            if (file.getName().matches("(.*)\\d+x\\d+(.*)")) {
+                Pattern pattern = Pattern.compile("\\d+x\\d+");
+                Matcher matcher = pattern.matcher(file.getName());
+                if (matcher.find()) {
+                    System.out.println();
+                    if (bannerWidth != Integer.parseInt(matcher.group().split("x")[0]) || bannerHeight != Integer.parseInt(matcher.group().split("x")[1])) {
+                        String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), bannerWidth + "x" + bannerHeight, file.getLastModifyingUser().getDisplayName());
+                        bannerErrors.add(error);
+                    }
+                }
+            }
+            if (file.getName().contains("х")) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s contains the Russian letter 'x'. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                bannerErrors.add(error);
+            }
+        } catch (NullPointerException e) {
+            String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s is corrupted. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+            bannerErrors.add(error);
+        } catch (NumberFormatException e) {
+            String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s contains the Russian letter 'x'. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+            bannerErrors.add(error);
+        }
+
+    }
+
     // метод обходит все папки внутри папки video/banners и добавляет ссылку на папку Google Drive в поле folderLink в репозиторий для экземпляров класса Creative
-    public static void getFolderLinksFromGoogleDrive(Drive service, InMemoryCreativeRepository repository, String creativeType, String directory, String teamDrive) {
+    public static void getFolderLinksFromGoogleDrive(Drive service, InMemoryCreativeRepository repository, String
+            creativeType, String directory, String teamDrive) {
         String pageToken = null;
         while (true) {
             FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "'" + directory + "' in parents and mimeType='application/vnd.google-apps.folder' and trashed = false", "nextPageToken, files(name, webViewLink)", teamDrive);
@@ -187,7 +218,8 @@ public class GeneralUtil {
                     // проверяем, чтобы это были не файлы в папках с исходниками
                     if (filename.matches("(.*)_b\\d+_(.*)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveBannerSpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
                         int bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("b", ""));
-                        if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[2].replace("b", ""));
+                        if (bannerNumber < 0)
+                            bannerNumber = parseIntSafely(fileNameParsedArray[2].replace("b", ""));
                         if (filename.contains("_b") && (fileNameParsedArray.length == 4 || fileNameParsedArray.length == 5 || fileNameParsedArray.length == 6) && fileNameParsedArray[2].length() >= 2 && fileNameParsedArray[3].length() >= 2 && bannerNumber > 0) {
                             //System.out.println(file.getName().toLowerCase());
                             if (!GoogleDriveBannerSpider.bannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + fileNameParsedArray[3]))
@@ -204,10 +236,11 @@ public class GeneralUtil {
     }
 
     // метод наполнения репозитория промежуточных сущностей (класс BannerAndLocale) для баннерных креативов Community
-    public static void communityBannerRepositoryFilling(Drive service, String query, String teamDrive) {
+    public static void communityBannerRepositoryFilling(Drive service, String
+            query, Set<String> communityBannerErrors, String teamDrive) {
         String pageToken = null;
         while (true) {
-            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink, parents)", teamDrive);
+            FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, query, "nextPageToken, files(id, name, webViewLink, lastModifyingUser, createdTime, thumbnailLink, parents, imageMediaMetadata)", teamDrive);
             List<File> files = result.getFiles();
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
@@ -220,14 +253,16 @@ public class GeneralUtil {
                     // if (filename.matches("(.*)_bc\\d+_(.*)") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("source") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("(footage)") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("asset") && !GoogleDriveCommunitySpider.folderDictionary.get(file.getParents().get(0)).equalsIgnoreCase("psd")) {
                     if (filename.matches("(.*)_bc\\d+_(.*)")) {
                         int bannerNumber = parseIntSafely(fileNameParsedArray[0].replace("bc", ""));
-                        if (bannerNumber < 0) bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("bc", ""));
+                        if (bannerNumber < 0)
+                            bannerNumber = parseIntSafely(fileNameParsedArray[1].replace("bc", ""));
                         if (filename.contains("_bc") && (fileNameParsedArray.length > 3) && fileNameParsedArray[1].length() >= 4 && bannerNumber > 0) {
-                            //System.out.println(file.getName().toLowerCase());
-                            String fileNameForGdoc = filename.replace(fileNameParsedArray[0] + "_" + fileNameParsedArray[1] + "_", "").replace("_" + fileNameParsedArray[fileNameParsedArray.length - 1], "").replace("_", " ").replaceAll("\\d+x\\d+","");
+                            System.out.println(file.getName().toLowerCase());
+                            String fileNameForGdoc = filename.replace(fileNameParsedArray[0] + "_" + fileNameParsedArray[1] + "_", "").replace("_" + fileNameParsedArray[fileNameParsedArray.length - 1], "").replace("_", " ").replaceAll("\\d+x\\d+", "");
                             fileNameForGdoc = Character.toUpperCase(fileNameForGdoc.charAt(0)) + fileNameForGdoc.substring(1);
                             if (!GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.ifContainsCreativeAndLocale(bannerNumber + "_" + "en"))
                                 GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.add(bannerNumber, "en", fileNameForGdoc);
                             GoogleDriveCommunitySpider.communityBannerAndLocaleRepository.update(bannerNumber + "_" + "en", "800x800", file.getThumbnailLink());
+                            checkNameAndSizeOfBannerCreative(file, fileNameParsedArray, communityBannerErrors);
                         }
                     }
                 }
@@ -239,7 +274,8 @@ public class GeneralUtil {
     }
 
     // формируем ассоциативный массив (словарь) ID папки - имя папки, такой словарь нужен, чтобы по нему определять имя папки при поиске креативов и отсеивать креативы из папок с исходниками
-    public static void getFolderIdNameDictionaryFromGoogleDrive(Drive service, Map<String, String> folderDictionary, String teamDrive) {
+    public static void getFolderIdNameDictionaryFromGoogleDrive(Drive
+                                                                        service, Map<String, String> folderDictionary, String teamDrive) {
         String pageToken = null;
         while (true) {
             FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "mimeType='application/vnd.google-apps.folder' and trashed = false", "nextPageToken, files(id, name)", teamDrive);

@@ -7,7 +7,9 @@ import dao.InMemoryCreativeRepository;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static util.GeneralUtil.endTimeFixing;
 import static util.GeneralUtil.startTimeFixing;
@@ -21,6 +23,7 @@ public class GoogleDriveCommunitySpider implements Runnable {
     static final String DropboxCommunityBannerPreviewFolderCM = "/CM/CommunityBannerPreviewFolder";
     static final Map<String, String> folderDictionary = new HashMap<>();
     static final String marketingCommunityTeamDrive = "0AKtTKKJJOgywUk9PVA";
+    public static final Set<String> communityBannerErrorsCE = new LinkedHashSet<>();
 
     public GoogleDriveCommunitySpider() {
 
@@ -32,10 +35,11 @@ public class GoogleDriveCommunitySpider implements Runnable {
 
         folderDictionary.clear();
 
+        communityBannerErrorsCE.clear();
         communityBannerAndLocaleRepository.clear();
         communityBannerRepository.clear();
 
-        GeneralUtil.communityBannerRepositoryFilling(serviceDrive, "(mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false and name contains 'ce_bc'", marketingCommunityTeamDrive);
+        GeneralUtil.communityBannerRepositoryFilling(serviceDrive, "(mimeType = 'image/jpeg' or mimeType = 'image/png') and trashed = false and name contains 'ce_bc'", communityBannerErrorsCE, marketingCommunityTeamDrive);
         GeneralUtil.bannerRepositoryFilling(communityBannerRepository);
 
         dropboxApiUtil.getDropboxFilesAndLinks(communityBannerRepository, DropboxCommunityBannerPreviewFolderCE);
@@ -45,6 +49,8 @@ public class GoogleDriveCommunitySpider implements Runnable {
         GeneralUtil.getFolderLinksFromGoogleDrive(serviceDrive, communityBannerRepository, "bc", "1J7x22CRa13DMe-7Kg9fIxvkyQdl2ZR2x", marketingCommunityTeamDrive);
 
         GoogleDriveApiUtil.clearAndPublishNewTableOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", communityBannerRepository, "BC_COEm!A2:D");
+        GoogleDriveApiUtil.clearAndPublishErrorLogOnSpreadsheet(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "BC_COEm!N2:N500", communityBannerErrorsCE);
+
         GoogleDriveApiUtil.publishModifiedTime(serviceSheets, "1SC92tKYXQDqujUcvZVYMmmNiJp35Q1b22fKg2C7zeQI", "USER_ENTERED", "BC_COEm!K1:K1");
 
         GeneralUtil.execTime = endTimeFixing(start);
