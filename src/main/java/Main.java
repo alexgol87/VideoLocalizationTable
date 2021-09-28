@@ -18,8 +18,8 @@ public class Main {
         // начинаем фиксировать время старта работы скрипта
         Instant start = startTimeFixing();
         // запускаем задание на парсинг videos / banners / community banners, раскомментируем нужную строку.
-        Runnable task = GoogleDriveCommunitySpider::new;
-      //  Runnable task = GoogleDriveSpider::new;
+      //  Runnable task = GoogleDriveCommunitySpider::new;
+        Runnable task = GoogleDriveSpider::new;
       //  Runnable task = GoogleDriveBannerSpider::new;
         // стартуем поток
         Thread thread = new Thread(task);

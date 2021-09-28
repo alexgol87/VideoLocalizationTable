@@ -26,6 +26,18 @@ public class GeneralUtil {
         return (s.matches("\\d+") && s.length() <= 9) ? Integer.parseInt(s) : -1;
     }
 
+    // метод для округления длины видео в миллисекундах до секунд
+    private static int round(double d) {
+        double dAbs = Math.abs(d);
+        int i = (int) dAbs;
+        double result = dAbs - (double) i;
+        if (result < 0.5) {
+            return d < 0 ? -i : i;
+        } else {
+            return d < 0 ? -(i + 1) : i + 1;
+        }
+    }
+
     // метод наполнения репозитория конечных сущностей (класс Creative) для видео креативов
     static void videoRepositoryFilling(InMemoryCreativeRepository repository) {
         GoogleDriveSpider.videoAndLocaleRepository.getAll()
@@ -135,6 +147,19 @@ public class GeneralUtil {
                 //System.out.println(error);
                 videoErrors.add(error);
             }
+            // поиск видео, у которых обозначенная в названии длина отличается от реальной на 1+ секунду
+            if (file.getName().matches("(.*)_\\d{1,2}s(.*)") && parseIntSafely(fileNameParsedArray[2].replace("v", "")) > 700) {
+                Pattern pattern = Pattern.compile("\\d{1,2}s");
+                Matcher matcher = pattern.matcher(file.getName());
+                if (matcher.find()) {
+                    int length = round(file.getVideoMediaMetadata().getDurationMillis().intValue() / 1000.0);
+                    if (Math.abs(length - parseIntSafely(matcher.group().replace("s", "")))> 1) {
+                        String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has another real length: %s seconds. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), length, file.getLastModifyingUser().getDisplayName());
+                        videoErrors.add(error);
+                        System.out.println(error);
+                    }
+                }
+            }
         } catch (NullPointerException e) {
             String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s is corrupted. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
             //System.out.println(error);
@@ -156,7 +181,6 @@ public class GeneralUtil {
                 Pattern pattern = Pattern.compile("\\d+x\\d+");
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.find()) {
-                    System.out.println();
                     if (bannerWidth != Integer.parseInt(matcher.group().split("x")[0]) || bannerHeight != Integer.parseInt(matcher.group().split("x")[1])) {
                         String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has wrong size: %s. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), bannerWidth + "x" + bannerHeight, file.getLastModifyingUser().getDisplayName());
                         bannerErrors.add(error);
@@ -174,7 +198,6 @@ public class GeneralUtil {
             String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s contains the Russian letter 'x'. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
             bannerErrors.add(error);
         }
-
     }
 
     // метод обходит все папки внутри папки video/banners и добавляет ссылку на папку Google Drive в поле folderLink в репозиторий для экземпляров класса Creative
