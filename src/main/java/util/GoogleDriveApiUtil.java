@@ -198,20 +198,20 @@ public class GoogleDriveApiUtil {
 
             ValueRange requestBody = new ValueRange();
             requestBody.setRange(rangeUpdate);
-            List<List<Object>> localizationValues = new ArrayList<>();
+            List<List<Object>> errorValues = new ArrayList<>();
             AtomicInteger lineIndex = new AtomicInteger();
 
             videoErrors
                     .stream()
                     .forEach(v -> {
 
-                        localizationValues.add(new ArrayList<>());
-                        localizationValues.get(lineIndex.get()).add(v);
+                        errorValues.add(new ArrayList<>());
+                        errorValues.get(lineIndex.get()).add(v);
                         lineIndex.getAndIncrement();
 
                     });
 
-            requestBody.setValues(localizationValues);
+            requestBody.setValues(errorValues);
 
             service.spreadsheets().values().update(spreadsheetId, rangeUpdate, requestBody)
                     .setValueInputOption(valueInputOption)

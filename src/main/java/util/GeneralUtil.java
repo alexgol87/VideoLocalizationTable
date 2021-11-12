@@ -142,7 +142,12 @@ public class GeneralUtil {
                 //System.out.println(error);
                 videoErrors.add(error);
             }
-            if (file.getSize() > 41943040 && parseIntSafely(fileNameParsedArray[2].replace("v", "")) > 600) {
+            if (file.getSize() > 41943040 && parseIntSafely(fileNameParsedArray[2].replace("v", "")) > 600 && fileNameParsedArray[0].equals("ce")) {
+                String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s exceeds size of 40 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
+                //System.out.println(error);
+                videoErrors.add(error);
+            }
+            if (file.getSize() > 41943040 && !fileNameParsedArray[0].equals("ce")) {
                 String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s exceeds size of 40 MB. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), file.getLastModifyingUser().getDisplayName());
                 //System.out.println(error);
                 videoErrors.add(error);
@@ -153,7 +158,7 @@ public class GeneralUtil {
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.find()) {
                     int length = round(file.getVideoMediaMetadata().getDurationMillis().intValue() / 1000.0);
-                    if (Math.abs(length - parseIntSafely(matcher.group().replace("s", "")))> 1) {
+                    if (Math.abs(length - parseIntSafely(matcher.group().replace("s", ""))) > 1) {
                         String error = String.format("=HYPERLINK(\"https://drive.google.com/drive/u/1/folders/%s\";\"%s has another real length: %s seconds. lastModifyingUser: %s\")", file.getParents().get(0), file.getName().toLowerCase(), length, file.getLastModifyingUser().getDisplayName());
                         videoErrors.add(error);
                         System.out.println(error);
@@ -297,8 +302,7 @@ public class GeneralUtil {
     }
 
     // формируем ассоциативный массив (словарь) ID папки - имя папки, такой словарь нужен, чтобы по нему определять имя папки при поиске креативов и отсеивать креативы из папок с исходниками
-    public static void getFolderIdNameDictionaryFromGoogleDrive(Drive
-                                                                        service, Map<String, String> folderDictionary, String teamDrive) {
+    public static void getFolderIdNameDictionaryFromGoogleDrive(Drive service, Map<String, String> folderDictionary, String teamDrive) {
         String pageToken = null;
         while (true) {
             FileList result = GoogleDriveApiUtil.getFileListFromDriveAPI(service, pageToken, "mimeType='application/vnd.google-apps.folder' and trashed = false", "nextPageToken, files(id, name)", teamDrive);

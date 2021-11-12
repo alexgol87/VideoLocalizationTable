@@ -76,7 +76,7 @@ public class DropboxApiUtil {
                                 repository.updateThumbnailLinkToDropboxLink(creativeNumber, metadata2.getUrl());
                             }
                         } else {
-                            // // для каждого экземпляра класса Creative, у которого нет  созданной ссылки на dropbox, формируем эту ссылку и обновляем поле thumbnailLink
+                            // для каждого экземпляра класса Creative, у которого нет  созданной ссылки на dropbox, формируем эту ссылку и обновляем поле thumbnailLink
                             SharedLinkMetadata sharedLink = client.sharing().createSharedLinkWithSettings(metadata.getPathLower());
                             repository.updateThumbnailLinkToDropboxLink(creativeNumber, sharedLink.getUrl());
                         }
